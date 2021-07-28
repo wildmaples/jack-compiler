@@ -15,5 +15,12 @@ jobs:
         with:
           java-version: 11
           distribution: adopt
+      - name: Download the nand2tetris tools
+        run: |
+          curl --location --output nand2tetris.zip 'https://drive.google.com/uc?id=1xZzcMIUETv3u3sdpM_oTJSTetpVee3KZ&export=download'
+          unzip nand2tetris.zip
+          chmod a+x nand2tetris/tools/*.sh
       - name: Run tests
         run: bundle exec rake test
+        env:
+          TEXT_COMPARER: nand2tetris/tools/TextComparer.sh
