@@ -31,4 +31,12 @@ class JackTokenizerTest < Minitest::Test
     jack_tokenizer.advance
     assert_equal(:SYMBOL, jack_tokenizer.token_type)
   end
+
+  def test_token_type_another_symbol
+    io = StringIO.new("~")
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:SYMBOL, jack_tokenizer.token_type)
+  end
 end

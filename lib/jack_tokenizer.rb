@@ -11,8 +11,10 @@ class JackTokenizer
     @current_raw_token = @raw_tokens.shift
   end
 
+  SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
+
   def token_type
-    if @current_raw_token == "{"
+    if SYMBOL_TOKENS.include?(@current_raw_token)
       :SYMBOL
     end
   end
