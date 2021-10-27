@@ -1,8 +1,10 @@
 class JackTokenizer
-  def initialize(input_file); end
+  def initialize(io)
+    @io = io
+  end
 
   def has_more_tokens?
-    raise NotImplementedError
+    !@io.eof?
   end
 
   def token_type
