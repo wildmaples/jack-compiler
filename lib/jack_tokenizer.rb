@@ -8,11 +8,13 @@ class JackTokenizer
   end
 
   def advance
-    @raw_tokens.shift
+    @current_raw_token = @raw_tokens.shift
   end
 
   def token_type
-    raise NotImplementedError
+    if @current_raw_token == "{"
+      :SYMBOL
+    end
   end
 
   def key_word
