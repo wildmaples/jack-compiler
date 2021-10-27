@@ -8,7 +8,7 @@ class JackTokenizer
   end
 
   def advance
-    @current_raw_token = @raw_tokens.shift
+    @current_token = @raw_tokens.shift
   end
 
   KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
@@ -16,23 +16,23 @@ class JackTokenizer
 
   def token_type
     begin
-      Integer(@current_raw_token)
+      Integer(@current_token)
       return :INT_VAL
     rescue ArgumentError; end
 
-    if @current_raw_token.start_with?('"')
+    if @current_token.start_with?('"')
       handle_string_values
-    elsif SYMBOL_TOKENS.include?(@current_raw_token)
+    elsif SYMBOL_TOKENS.include?(@current_token)
       :SYMBOL
-    elsif KEYWORD_TOKENS.include?(@current_raw_token)
+    elsif KEYWORD_TOKENS.include?(@current_token)
       :KEYWORD
-    elsif @current_raw_token.is_a?(String)
+    elsif @current_token.is_a?(String)
       :IDENTIFIER
     end
   end
 
   def handle_string_values
-    if @current_raw_token.start_with?('"') && @current_raw_token.end_with?('"')
+    if @current_token.start_with?('"') && @current_token.end_with?('"')
       :STRING_VAL
     end
   end
