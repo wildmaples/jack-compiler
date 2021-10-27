@@ -16,7 +16,7 @@ class JackTokenizer
 
   def token_type
     begin
-      Integer(@current_token)
+      @current_token = Integer(@current_token)
       return :INT_CONST
     rescue ArgumentError; end
 
@@ -45,7 +45,7 @@ class JackTokenizer
   end
 
   def int_val
-    raise NotImplementedError
+    @current_token
   end
 
   def string_val
