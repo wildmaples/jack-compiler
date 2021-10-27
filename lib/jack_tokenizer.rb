@@ -1,7 +1,7 @@
 class JackTokenizer
   def initialize(input_file); end
 
-  def has_more_tokens
+  def has_more_tokens?
     raise NotImplementedError
   end
 
