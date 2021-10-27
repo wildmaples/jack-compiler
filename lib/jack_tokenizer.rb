@@ -20,12 +20,20 @@ class JackTokenizer
       return :INT_VAL
     rescue ArgumentError; end
 
-    if SYMBOL_TOKENS.include?(@current_raw_token)
+    if @current_raw_token.start_with?('"')
+      handle_string_values
+    elsif SYMBOL_TOKENS.include?(@current_raw_token)
       :SYMBOL
     elsif KEYWORD_TOKENS.include?(@current_raw_token)
       :KEYWORD
     elsif @current_raw_token.is_a?(String)
       :IDENTIFIER
+    end
+  end
+
+  def handle_string_values
+    if @current_raw_token.start_with?('"') && @current_raw_token.end_with?('"')
+      :STRING_VAL
     end
   end
 
