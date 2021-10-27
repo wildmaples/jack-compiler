@@ -41,7 +41,7 @@ class JackTokenizer
   end
 
   def identifier
-    raise NotImplementedError
+    @current_token
   end
 
   def int_val
