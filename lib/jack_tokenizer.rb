@@ -21,7 +21,7 @@ class JackTokenizer
     rescue ArgumentError; end
 
     if @current_token.start_with?('"')
-      handle_string_values
+      @current_token = @current_token[1..-2]
       :STRING_CONST
     elsif SYMBOL_TOKENS.include?(@current_token)
       :SYMBOL
@@ -30,10 +30,6 @@ class JackTokenizer
     elsif @current_token.is_a?(String)
       :IDENTIFIER
     end
-  end
-
-  def handle_string_values
-    @current_token = @current_token[1..-2]
   end
 
   def key_word
