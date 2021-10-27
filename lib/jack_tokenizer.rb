@@ -19,6 +19,8 @@ class JackTokenizer
       :SYMBOL
     elsif KEYWORD_TOKENS.include?(@current_raw_token)
       :KEYWORD
+    elsif @current_raw_token.is_a?(String)
+      :IDENTIFIER
     end
   end
 
