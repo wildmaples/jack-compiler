@@ -35,6 +35,20 @@ class JackTokenizer
   def handle_string_values
     if @current_token.start_with?('"') && @current_token.end_with?('"')
       @current_token = @current_token[1..-2]
+    else
+      string_val = @current_token[1..]
+
+      while !@current_token.end_with?('"') do
+        string_val << " "
+        advance
+        string_val << @current_token
+      end
+
+      if string_val.end_with?('"')
+        string_val = string_val[..-2]
+      end
+
+      @current_token = string_val
     end
   end
 
