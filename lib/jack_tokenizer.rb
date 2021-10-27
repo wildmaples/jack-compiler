@@ -11,11 +11,14 @@ class JackTokenizer
     @current_raw_token = @raw_tokens.shift
   end
 
+  KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
   SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
 
   def token_type
     if SYMBOL_TOKENS.include?(@current_raw_token)
       :SYMBOL
+    elsif KEYWORD_TOKENS.include?(@current_raw_token)
+      :KEYWORD
     end
   end
 
