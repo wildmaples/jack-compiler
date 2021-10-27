@@ -15,6 +15,11 @@ class JackTokenizer
   SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
 
   def token_type
+    begin
+      Integer(@current_raw_token)
+      return :INT_VAL
+    rescue ArgumentError; end
+
     if SYMBOL_TOKENS.include?(@current_raw_token)
       :SYMBOL
     elsif KEYWORD_TOKENS.include?(@current_raw_token)
