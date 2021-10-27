@@ -22,6 +22,7 @@ class JackTokenizer
 
     if @current_token.start_with?('"')
       handle_string_values
+      :STRING_CONST
     elsif SYMBOL_TOKENS.include?(@current_token)
       :SYMBOL
     elsif KEYWORD_TOKENS.include?(@current_token)
@@ -34,7 +35,6 @@ class JackTokenizer
   def handle_string_values
     if @current_token.start_with?('"') && @current_token.end_with?('"')
       @current_token = @current_token[1..-2]
-      :STRING_CONST
     end
   end
 
