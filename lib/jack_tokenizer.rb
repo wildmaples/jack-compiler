@@ -33,6 +33,7 @@ class JackTokenizer
 
   def handle_string_values
     if @current_token.start_with?('"') && @current_token.end_with?('"')
+      @current_token = @current_token[1..-2]
       :STRING_CONST
     end
   end
@@ -54,6 +55,6 @@ class JackTokenizer
   end
 
   def string_val
-    raise NotImplementedError
+    @current_token
   end
 end
