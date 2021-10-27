@@ -17,7 +17,7 @@ class JackTokenizer
   def token_type
     begin
       Integer(@current_token)
-      return :INT_VAL
+      return :INT_CONST
     rescue ArgumentError; end
 
     if @current_token.start_with?('"')
@@ -33,7 +33,7 @@ class JackTokenizer
 
   def handle_string_values
     if @current_token.start_with?('"') && @current_token.end_with?('"')
-      :STRING_VAL
+      :STRING_CONST
     end
   end
 

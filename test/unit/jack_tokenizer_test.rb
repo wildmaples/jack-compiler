@@ -77,7 +77,7 @@ class JackTokenizerTest < Minitest::Test
     jack_tokenizer = JackTokenizer.new(io)
     jack_tokenizer.has_more_tokens?
     jack_tokenizer.advance
-    assert_equal(:INT_VAL, jack_tokenizer.token_type)
+    assert_equal(:INT_CONST, jack_tokenizer.token_type)
   end
 
   def test_token_type_for_string_values
@@ -85,7 +85,7 @@ class JackTokenizerTest < Minitest::Test
     jack_tokenizer = JackTokenizer.new(io)
     jack_tokenizer.has_more_tokens?
     jack_tokenizer.advance
-    assert_equal(:STRING_VAL, jack_tokenizer.token_type)
+    assert_equal(:STRING_CONST, jack_tokenizer.token_type)
   end
 
   def test_token_type_for_string_values_with_spaces
@@ -93,6 +93,6 @@ class JackTokenizerTest < Minitest::Test
     jack_tokenizer = JackTokenizer.new(io)
     jack_tokenizer.has_more_tokens?
     jack_tokenizer.advance
-    assert_equal(:STRING_VAL, jack_tokenizer.token_type)
+    assert_equal(:STRING_CONST, jack_tokenizer.token_type)
   end
 end
