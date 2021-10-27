@@ -1,10 +1,14 @@
 class JackTokenizer
   def initialize(io)
-    @io = io
+    @raw_tokens = io.read.split(" ")
   end
 
   def has_more_tokens?
-    !@io.eof?
+    !@raw_tokens.empty?
+  end
+
+  def advance
+    @raw_tokens.shift
   end
 
   def token_type
