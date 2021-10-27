@@ -1,0 +1,24 @@
+name: jack-compiler tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: adopt
+      - uses: actions/cache@v2
+        id: cache-nand2tetris
+        with:
+          path: nand2tetris
+          key: nand2tetris
+      - name: Run tests
+        run: bundle exec rake test
