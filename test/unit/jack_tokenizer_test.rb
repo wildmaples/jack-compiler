@@ -7,4 +7,10 @@ class JackTokenizerTest < Minitest::Test
     jack_tokenizer = JackTokenizer.new(io)
     refute(jack_tokenizer.has_more_tokens?)
   end
+
+  def test_has_more_tokens_returns_true_when_tokens_available
+    io = StringIO.new("class Foo { }")
+    jack_tokenizer = JackTokenizer.new(io)
+    assert(jack_tokenizer.has_more_tokens?)
+  end
 end
