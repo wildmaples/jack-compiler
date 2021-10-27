@@ -33,7 +33,7 @@ class JackTokenizer
   end
 
   def key_word
-    @current_token
+    @current_token.upcase.to_sym
   end
 
   def symbol

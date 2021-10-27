@@ -192,6 +192,6 @@ class JackTokenizerTest < Minitest::Test
     jack_tokenizer.has_more_tokens?
     jack_tokenizer.advance
     jack_tokenizer.token_type
-    assert_equal("class", jack_tokenizer.key_word)
+    assert_equal(:CLASS, jack_tokenizer.key_word)
   end
 end
