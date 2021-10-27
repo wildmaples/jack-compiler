@@ -33,11 +33,11 @@ class JackTokenizer
   end
 
   def key_word
-    raise NotImplementedError
+    @current_token
   end
 
   def symbol
-    raise NotImplementedError
+    @current_token
   end
 
   def identifier
