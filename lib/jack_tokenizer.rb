@@ -16,12 +16,11 @@ class JackTokenizer
 
   def token_type
     begin
-      @current_token = Integer(@current_token)
+      Integer(@current_token)
       return :INT_CONST
     rescue ArgumentError; end
 
     if @current_token.start_with?('"')
-      @current_token = @current_token[1..-2]
       :STRING_CONST
     elsif SYMBOL_TOKENS.include?(@current_token)
       :SYMBOL
@@ -45,10 +44,10 @@ class JackTokenizer
   end
 
   def int_val
-    @current_token
+    Integer(@current_token)
   end
 
   def string_val
-    @current_token
+    @current_token[1..-2]
   end
 end
