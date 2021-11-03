@@ -19,6 +19,7 @@ class JackTokenizer
 
     if SYMBOL_TOKENS.include?(current_chars)
       @token_type = :SYMBOL
+      @current_token = current_chars
     elsif KEYWORD_TOKENS.include?(current_chars)
       @token_type = :KEYWORD
     elsif DIGITS.include?(current_chars[0])
@@ -51,6 +52,7 @@ class JackTokenizer
   end
 
   def symbol
+    @current_token
   end
 
   def identifier
