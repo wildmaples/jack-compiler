@@ -15,6 +15,12 @@ class JackTokenizer
     end
 
     next_index = @input.index(" ", @index)
+    current_chars = @input[@index...next_index]
+
+    if KEYWORD_TOKENS.include?(current_chars)
+      @token_type = :KEYWORD
+    end
+
     if next_index.nil?
       @index = @input.length
     else
