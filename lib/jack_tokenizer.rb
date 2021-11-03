@@ -16,6 +16,8 @@ class JackTokenizer
       @token_type = :SYMBOL
     elsif KEYWORD_TOKENS.include?(current_chars)
       @token_type = :KEYWORD
+    else
+      @token_type = :IDENTIFIER
     end
 
     if next_index.nil?
