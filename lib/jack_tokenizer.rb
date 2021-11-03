@@ -15,23 +15,18 @@ class JackTokenizer
       next_index = @input.index(" ", @index)
     end
 
-    current_chars = @input[@index...next_index]
+    @current_token = @input[@index...next_index]
 
-    if SYMBOL_TOKENS.include?(current_chars)
+    if SYMBOL_TOKENS.include?(@current_token)
       @token_type = :SYMBOL
-      @current_token = current_chars
-    elsif KEYWORD_TOKENS.include?(current_chars)
+    elsif KEYWORD_TOKENS.include?(@current_token)
       @token_type = :KEYWORD
-      @current_token = current_chars.upcase.to_sym
-    elsif DIGITS.include?(current_chars[0])
+    elsif DIGITS.include?(@current_token[0])
       @token_type = :INT_CONST
-      @current_token = current_chars.to_i
-    elsif current_chars.start_with?('"')
+    elsif @current_token.start_with?('"')
       @token_type = :STRING_CONST
-      @current_token = current_chars[1...-1]
     else
       @token_type = :IDENTIFIER
-      @current_token = current_chars
     end
 
     if next_index.nil?
@@ -50,7 +45,7 @@ class JackTokenizer
   end
 
   def key_word
-    @current_token
+    @current_token.upcase.to_sym
   end
 
   def symbol
@@ -62,10 +57,10 @@ class JackTokenizer
   end
 
   def int_val
-    @current_token
+    @current_token.to_i
   end
 
   def string_val
-    @current_token
+    @current_token[1...-1]
   end
 end
