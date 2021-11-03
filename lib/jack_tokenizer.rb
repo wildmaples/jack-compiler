@@ -9,7 +9,12 @@ class JackTokenizer
   end
 
   def advance
-    next_index = @input.index(" ", @index)
+    if @input[@index] == '"'
+      next_index = @input.index('"', @index + 1)
+    else
+      next_index = @input.index(" ", @index)
+    end
+
     current_chars = @input[@index...next_index]
 
     if SYMBOL_TOKENS.include?(current_chars)
