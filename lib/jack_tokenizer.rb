@@ -16,6 +16,8 @@ class JackTokenizer
       @token_type = :SYMBOL
     elsif KEYWORD_TOKENS.include?(current_chars)
       @token_type = :KEYWORD
+    elsif DIGITS.include?(current_chars[0])
+      @token_type = :INT_CONST
     else
       @token_type = :IDENTIFIER
     end
@@ -29,6 +31,7 @@ class JackTokenizer
 
   KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
   SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
+  DIGITS = %w[0 1 2 3 4 5 6 7 8 9]
 
   def token_type
     @token_type
