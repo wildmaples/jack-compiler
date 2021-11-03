@@ -24,6 +24,10 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
+  def test_advance_with_multiple_whitespace
+    skip
+  end
+
   # def test_token_type_for_symbol
   #   io = StringIO.new("{")
   #   jack_tokenizer = JackTokenizer.new(io)
