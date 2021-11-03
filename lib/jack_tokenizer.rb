@@ -29,6 +29,7 @@ class JackTokenizer
       @current_token = current_chars[1...-1]
     else
       @token_type = :IDENTIFIER
+      @current_token = current_chars
     end
 
     if next_index.nil?
@@ -53,6 +54,7 @@ class JackTokenizer
   end
 
   def identifier
+    @current_token
   end
 
   def int_val

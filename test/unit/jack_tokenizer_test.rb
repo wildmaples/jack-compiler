@@ -164,23 +164,23 @@ class JackTokenizerTest < Minitest::Test
     assert_equal(999, jack_tokenizer.int_val)
   end
 
-  # def test_identifier_returns_string_identifier
-  #   io = StringIO.new("FooBar")
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   jack_tokenizer.token_type
-  #   assert_equal("FooBar", jack_tokenizer.identifier)
-  # end
+  def test_identifier_returns_string_identifier
+    io = StringIO.new("FooBar")
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    jack_tokenizer.token_type
+    assert_equal("FooBar", jack_tokenizer.identifier)
+  end
 
-  # def test_identifier_returns_string_identifier_special_characters
-  #   io = StringIO.new("Foo_Bar1")
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   jack_tokenizer.token_type
-  #   assert_equal("Foo_Bar1", jack_tokenizer.identifier)
-  # end
+  def test_identifier_returns_string_identifier_special_characters
+    io = StringIO.new("Foo_Bar1")
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    jack_tokenizer.token_type
+    assert_equal("Foo_Bar1", jack_tokenizer.identifier)
+  end
 
   # def test_symbol_returns_symbol
   #   io = StringIO.new("~")
