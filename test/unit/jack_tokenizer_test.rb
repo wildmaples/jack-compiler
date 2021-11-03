@@ -52,13 +52,13 @@ class JackTokenizerTest < Minitest::Test
     assert_equal(:KEYWORD, jack_tokenizer.token_type)
   end
 
-  # def test_token_type_for_another_key_word
-  #   io = StringIO.new("static")
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   assert_equal(:KEYWORD, jack_tokenizer.token_type)
-  # end
+  def test_token_type_for_another_key_word
+    io = StringIO.new("static")
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:KEYWORD, jack_tokenizer.token_type)
+  end
 
   # def test_token_type_for_identifiers
   #   io = StringIO.new("FooBar")
