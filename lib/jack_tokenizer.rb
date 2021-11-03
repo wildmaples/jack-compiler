@@ -9,6 +9,11 @@ class JackTokenizer
   end
 
   def advance
+    current_char = @input[@index]
+    if SYMBOL_TOKENS.include?(current_char)
+      @token_type = :SYMBOL
+    end
+
     next_index = @input.index(" ", @index)
     if next_index.nil?
       @index = @input.length
@@ -21,6 +26,7 @@ class JackTokenizer
   SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
 
   def token_type
+    @token_type
   end
 
   def key_word
