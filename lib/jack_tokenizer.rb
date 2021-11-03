@@ -18,6 +18,8 @@ class JackTokenizer
       @token_type = :KEYWORD
     elsif DIGITS.include?(current_chars[0])
       @token_type = :INT_CONST
+    elsif current_chars.start_with?('"')
+      @token_type = :STRING_CONST
     else
       @token_type = :IDENTIFIER
     end
