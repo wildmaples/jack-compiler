@@ -9,6 +9,12 @@ class JackTokenizer
   end
 
   def advance
+    next_index = @input.index(" ", @index)
+    if next_index.nil?
+      @index = @input.length
+    else
+      @index = next_index + 1
+    end
   end
 
   KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]

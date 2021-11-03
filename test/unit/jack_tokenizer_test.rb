@@ -14,15 +14,15 @@ class JackTokenizerTest < Minitest::Test
     assert(jack_tokenizer.has_more_tokens?)
   end
 
-  # def test_advance_to_end_of_file
-  #   io = StringIO.new("class Foo { }")
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   4.times do
-  #     jack_tokenizer.has_more_tokens?
-  #     jack_tokenizer.advance
-  #   end
-  #   refute(jack_tokenizer.has_more_tokens?)
-  # end
+  def test_advance_to_end_of_file
+    io = StringIO.new("class Foo { }")
+    jack_tokenizer = JackTokenizer.new(io)
+    4.times do
+      jack_tokenizer.has_more_tokens?
+      jack_tokenizer.advance
+    end
+    refute(jack_tokenizer.has_more_tokens?)
+  end
 
   # def test_token_type_for_symbol
   #   io = StringIO.new("{")
