@@ -22,6 +22,7 @@ class JackTokenizer
       @current_token = current_chars
     elsif KEYWORD_TOKENS.include?(current_chars)
       @token_type = :KEYWORD
+      @current_token = current_chars.upcase.to_sym
     elsif DIGITS.include?(current_chars[0])
       @token_type = :INT_CONST
       @current_token = current_chars.to_i
@@ -49,6 +50,7 @@ class JackTokenizer
   end
 
   def key_word
+    @current_token
   end
 
   def symbol

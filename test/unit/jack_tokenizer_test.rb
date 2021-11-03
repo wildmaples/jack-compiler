@@ -191,12 +191,12 @@ class JackTokenizerTest < Minitest::Test
     assert_equal("~", jack_tokenizer.symbol)
   end
 
-  # def test_symbol_returns_key_world
-  #   io = StringIO.new("class")
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   jack_tokenizer.token_type
-  #   assert_equal(:CLASS, jack_tokenizer.key_word)
-  # end
+  def test_symbol_returns_key_word
+    io = StringIO.new("class")
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    jack_tokenizer.token_type
+    assert_equal(:CLASS, jack_tokenizer.key_word)
+  end
 end
