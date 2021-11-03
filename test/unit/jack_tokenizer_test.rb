@@ -101,59 +101,59 @@ class JackTokenizerTest < Minitest::Test
     assert_equal(:STRING_CONST, jack_tokenizer.token_type)
   end
 
-  # def test_string_val_returns_string_token
-  #   io = StringIO.new('"a"')
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   assert_equal(:STRING_CONST, jack_tokenizer.token_type)
-  #   assert_equal("a", jack_tokenizer.string_val)
-  # end
+  def test_string_val_returns_string_token
+    io = StringIO.new('"a"')
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:STRING_CONST, jack_tokenizer.token_type)
+    assert_equal("a", jack_tokenizer.string_val)
+  end
 
-  # def test_string_val_returns_string_token_with_spaces
-  #   io = StringIO.new('"a foo bar"')
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   assert_equal(:STRING_CONST, jack_tokenizer.token_type)
-  #   assert_equal("a foo bar", jack_tokenizer.string_val)
-  # end
+  def test_string_val_returns_string_token_with_spaces
+    io = StringIO.new('"a foo bar"')
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:STRING_CONST, jack_tokenizer.token_type)
+    assert_equal("a foo bar", jack_tokenizer.string_val)
+  end
 
-  # def test_string_val_returns_string_token_with_spaces_2
-  #   io = StringIO.new('" a foo bar"')
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   assert_equal(:STRING_CONST, jack_tokenizer.token_type)
-  #   assert_equal(" a foo bar", jack_tokenizer.string_val)
-  # end
+  def test_string_val_returns_string_token_with_spaces_2
+    io = StringIO.new('" a foo bar"')
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:STRING_CONST, jack_tokenizer.token_type)
+    assert_equal(" a foo bar", jack_tokenizer.string_val)
+  end
 
-  # def test_string_val_returns_string_token_with_spaces_3
-  #   io = StringIO.new('"a foo bar "')
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   assert_equal(:STRING_CONST, jack_tokenizer.token_type)
-  #   assert_equal("a foo bar ", jack_tokenizer.string_val)
-  # end
+  def test_string_val_returns_string_token_with_spaces_3
+    io = StringIO.new('"a foo bar "')
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:STRING_CONST, jack_tokenizer.token_type)
+    assert_equal("a foo bar ", jack_tokenizer.string_val)
+  end
 
-  # def test_string_val_returns_string_token_with_spaces_4
-  #   io = StringIO.new('" a foo bar "')
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   assert_equal(:STRING_CONST, jack_tokenizer.token_type)
-  #   assert_equal(" a foo bar ", jack_tokenizer.string_val)
-  # end
+  def test_string_val_returns_string_token_with_spaces_4
+    io = StringIO.new('" a foo bar "')
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:STRING_CONST, jack_tokenizer.token_type)
+    assert_equal(" a foo bar ", jack_tokenizer.string_val)
+  end
 
-  # def test_string_val_returns_string_token_with_spaces_5
-  #   io = StringIO.new('" a foo    bar "')
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   assert_equal(:STRING_CONST, jack_tokenizer.token_type)
-  #   assert_equal(" a foo    bar ", jack_tokenizer.string_val)
-  # end
+  def test_string_val_returns_string_token_with_spaces_5
+    io = StringIO.new('" a foo    bar "')
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:STRING_CONST, jack_tokenizer.token_type)
+    assert_equal(" a foo    bar ", jack_tokenizer.string_val)
+  end
 
   # def test_int_val_returns_integer
   #   io = StringIO.new("999")

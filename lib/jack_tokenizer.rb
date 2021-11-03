@@ -10,7 +10,7 @@ class JackTokenizer
 
   def advance
     if @input[@index] == '"'
-      next_index = @input.index('"', @index + 1)
+      next_index = @input.index('"', @index + 1) + 1
     else
       next_index = @input.index(" ", @index)
     end
@@ -25,6 +25,7 @@ class JackTokenizer
       @token_type = :INT_CONST
     elsif current_chars.start_with?('"')
       @token_type = :STRING_CONST
+      @current_token = current_chars[1...-1]
     else
       @token_type = :IDENTIFIER
     end
@@ -57,5 +58,6 @@ class JackTokenizer
   end
 
   def string_val
+    @current_token
   end
 end
