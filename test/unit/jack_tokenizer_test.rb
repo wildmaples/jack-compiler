@@ -155,14 +155,14 @@ class JackTokenizerTest < Minitest::Test
     assert_equal(" a foo    bar ", jack_tokenizer.string_val)
   end
 
-  # def test_int_val_returns_integer
-  #   io = StringIO.new("999")
-  #   jack_tokenizer = JackTokenizer.new(io)
-  #   jack_tokenizer.has_more_tokens?
-  #   jack_tokenizer.advance
-  #   jack_tokenizer.token_type
-  #   assert_equal(999, jack_tokenizer.int_val)
-  # end
+  def test_int_val_returns_integer
+    io = StringIO.new("999")
+    jack_tokenizer = JackTokenizer.new(io)
+    jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    jack_tokenizer.token_type
+    assert_equal(999, jack_tokenizer.int_val)
+  end
 
   # def test_identifier_returns_string_identifier
   #   io = StringIO.new("FooBar")
