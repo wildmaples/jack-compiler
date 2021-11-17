@@ -24,6 +24,10 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
+  def test_advance_with_multiple_whitespace
+    skip
+  end
+
   def test_token_type_for_symbol
     io = StringIO.new("{")
     jack_tokenizer = JackTokenizer.new(io)
@@ -89,10 +93,11 @@ class JackTokenizerTest < Minitest::Test
   end
 
   def test_token_type_for_string_values_with_spaces
-    io = StringIO.new('" a "')
+    io = StringIO.new('"a foo bar"')
     jack_tokenizer = JackTokenizer.new(io)
     jack_tokenizer.has_more_tokens?
     jack_tokenizer.advance
+    refute(jack_tokenizer.has_more_tokens?)
     assert_equal(:STRING_CONST, jack_tokenizer.token_type)
   end
 
@@ -186,7 +191,7 @@ class JackTokenizerTest < Minitest::Test
     assert_equal("~", jack_tokenizer.symbol)
   end
 
-  def test_symbol_returns_key_world
+  def test_symbol_returns_key_word
     io = StringIO.new("class")
     jack_tokenizer = JackTokenizer.new(io)
     jack_tokenizer.has_more_tokens?
