@@ -24,6 +24,16 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
+  def test_advance_without_spaces
+    io = StringIO.new("xyz[123]")
+    jack_tokenizer = JackTokenizer.new(io)
+    4.times do
+      assert(jack_tokenizer.has_more_tokens?)
+      jack_tokenizer.advance
+    end
+    refute(jack_tokenizer.has_more_tokens?)
+  end
+
   def test_advance_with_multiple_whitespace
     skip
   end

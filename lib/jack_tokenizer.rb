@@ -11,6 +11,18 @@ class JackTokenizer
   def advance
     if @input[@index] == '"'
       next_index = @input.index('"', @index + 1) + 1
+    elsif is_start_of_identifier?(@input[@index])
+      next_index = @index
+      while is_body_of_identifier?(@input[next_index])
+        next_index += 1
+      end
+    elsif SYMBOL_TOKENS.include?(@input[@index])
+      next_index = @index + 1
+    elsif DIGITS.include?(@input[@index])
+      next_index = @index
+      while DIGITS.include?(@input[next_index])
+        next_index += 1
+      end
     else
       next_index = @input.index(" ", @index)
     end
@@ -31,8 +43,10 @@ class JackTokenizer
 
     if next_index.nil?
       @index = @input.length
-    else
+    elsif @input[next_index] == " "
       @index = next_index + 1
+    else
+      @index = next_index
     end
   end
 
@@ -62,5 +76,17 @@ class JackTokenizer
 
   def string_val
     @current_token[1...-1]
+  end
+
+  private
+
+  LETTERS = ("a".."z").to_a + ("A".."Z").to_a
+
+  def is_start_of_identifier?(char)
+    char == "_" || LETTERS.include?(char)
+  end
+
+  def is_body_of_identifier?(char)
+    is_start_of_identifier?(char) || DIGITS.include?(char)
   end
 end
