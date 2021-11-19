@@ -53,11 +53,7 @@ class JackTokenizer
       @token_type = :IDENTIFIER
     end
 
-    if next_index.nil?
-      @index = @input.length
-    else
-      @index = next_index
-    end
+    @index = next_index
   end
 
   def token_type
