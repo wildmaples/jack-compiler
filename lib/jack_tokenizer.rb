@@ -44,7 +44,10 @@ class JackTokenizer
     if next_index.nil?
       @index = @input.length
     elsif @input[next_index] == " "
-      @index = next_index + 1
+      while @input[next_index] == " "
+        next_index += 1
+      end
+      @index = next_index
     else
       @index = next_index
     end
