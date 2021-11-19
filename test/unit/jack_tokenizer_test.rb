@@ -251,4 +251,26 @@ class JackTokenizerTest < Minitest::Test
     jack_tokenizer.token_type
     assert_equal(:CLASS, jack_tokenizer.key_word)
   end
+
+  def test_division
+    io = StringIO.new('4 / 2')
+    jack_tokenizer = JackTokenizer.new(io)
+
+    assert jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:INT_CONST, jack_tokenizer.token_type)
+    assert_equal(4, jack_tokenizer.int_val)
+
+    assert jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:SYMBOL, jack_tokenizer.token_type)
+    assert_equal('/', jack_tokenizer.symbol)
+
+    assert jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:INT_CONST, jack_tokenizer.token_type)
+    assert_equal(2, jack_tokenizer.int_val)
+
+    refute(jack_tokenizer.has_more_tokens?)
+  end
 end
