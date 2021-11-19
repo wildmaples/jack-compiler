@@ -4,6 +4,12 @@ class JackTokenizer
     @index = 0
   end
 
+  KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
+  SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
+  DIGITS = %w[0 1 2 3 4 5 6 7 8 9]
+  WHITESPACES = [" ", "\n"]
+  LETTERS = ("a".."z").to_a + ("A".."Z").to_a
+
   def has_more_tokens?
     while WHITESPACES.include?(@input[@index])
       @index += 1
@@ -58,11 +64,6 @@ class JackTokenizer
     end
   end
 
-  KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
-  SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
-  DIGITS = %w[0 1 2 3 4 5 6 7 8 9]
-  WHITESPACES = [" ", "\n"]
-
   def token_type
     @token_type
   end
@@ -88,8 +89,6 @@ class JackTokenizer
   end
 
   private
-
-  LETTERS = ("a".."z").to_a + ("A".."Z").to_a
 
   def is_start_of_identifier?(char)
     char == "_" || LETTERS.include?(char)
