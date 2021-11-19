@@ -44,7 +44,7 @@ class JackTokenizer
     if next_index.nil?
       @index = @input.length
     else
-      while @input[next_index] == " "
+      while WHITESPACES.include?(@input[next_index])
         next_index += 1
       end
       @index = next_index
@@ -54,6 +54,7 @@ class JackTokenizer
   KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
   SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
   DIGITS = %w[0 1 2 3 4 5 6 7 8 9]
+  WHITESPACES = [" ", "\n"]
 
   def token_type
     @token_type
