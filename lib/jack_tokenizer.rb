@@ -49,9 +49,10 @@ class JackTokenizer
       @index = @input.length
     else
       @index = next_index
-      while WHITESPACES.include?(@input[@index])
-        @index += 1
-      end
+    end
+
+    while WHITESPACES.include?(@input[@index])
+      @index += 1
     end
   end
 
