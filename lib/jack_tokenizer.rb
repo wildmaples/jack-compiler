@@ -16,9 +16,7 @@ class JackTokenizer
     end
 
     if @input[@index] == "/" && @input[@index+1] == "/"
-      while @input[@index] != "\n" && @index < @input.length
-        @index += 1
-      end
+      @index = @input.index("\n", @index) || @input.length
     end
 
     @index < @input.length
