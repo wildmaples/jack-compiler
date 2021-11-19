@@ -9,6 +9,10 @@ class JackTokenizer
   end
 
   def advance
+    while WHITESPACES.include?(@input[@index])
+      @index += 1
+    end
+
     if @input[@index] == '"'
       next_index = @input.index('"', @index + 1) + 1
     elsif is_start_of_identifier?(@input[@index])
