@@ -5,14 +5,20 @@ class JackTokenizer
   end
 
   def has_more_tokens?
-    @index < @input.length
-  end
-
-  def advance
     while WHITESPACES.include?(@input[@index])
       @index += 1
     end
 
+    if @input[@index] == "/"
+      while @input[@index] != "\n" && @index < @input.length
+        @index += 1
+      end
+    end
+
+    @index < @input.length
+  end
+
+  def advance
     if @input[@index] == '"'
       next_index = @input.index('"', @index + 1) + 1
     elsif is_start_of_identifier?(@input[@index])
