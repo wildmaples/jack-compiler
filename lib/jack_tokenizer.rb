@@ -56,16 +56,6 @@ class JackTokenizer
     else
       @index = next_index
     end
-
-    while WHITESPACES.include?(@input[@index])
-      @index += 1
-    end
-
-    if @input[@index] == "/"
-      while @input[@index] != "\n" && @index < @input.length
-        @index += 1
-      end
-    end
   end
 
   KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
