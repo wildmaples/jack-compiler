@@ -39,8 +39,6 @@ class JackTokenizer
       while DIGITS.include?(@input[next_index])
         next_index += 1
       end
-    else
-      next_index = @input.index(" ", @index)
     end
 
     @current_token = @input[@index...next_index]
