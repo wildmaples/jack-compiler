@@ -24,7 +24,7 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
-  def test_advance_without_spaces
+  def test_has_more_tokens_skips_without_spaces
     io = StringIO.new("xyz[123]")
     jack_tokenizer = JackTokenizer.new(io)
     4.times do
@@ -34,7 +34,7 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
-  def test_advance_with_multiple_whitespaces
+  def test_has_more_tokens_skips_multiple_whitespaces
     io = StringIO.new("xyz[123]  ")
     jack_tokenizer = JackTokenizer.new(io)
     4.times do
@@ -44,7 +44,7 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
-  def test_advance_with_leading_whitespaces
+  def test_has_more_tokens_skips_leading_whitespaces
     io = StringIO.new(" xyz[123]")
     jack_tokenizer = JackTokenizer.new(io)
     4.times do
@@ -54,7 +54,7 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
-  def test_advance_with_different_whitespaces
+  def test_has_more_tokens_skips_different_whitespaces
     io = StringIO.new("xyz[123] \n")
     jack_tokenizer = JackTokenizer.new(io)
     4.times do
@@ -64,7 +64,7 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
-  def test_advance_through_trailing_double_slash_comments
+  def test_has_more_tokens_skips_trailing_double_slash_comments
     io = StringIO.new("xyz[123] // TODO")
     jack_tokenizer = JackTokenizer.new(io)
     4.times do
@@ -74,7 +74,7 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
-  def test_advance_through_leading_double_slash_comments
+  def test_has_more_tokens_skips_leading_double_slash_comments
     io = StringIO.new("// TODO xyz[123]")
     jack_tokenizer = JackTokenizer.new(io)
     refute(jack_tokenizer.has_more_tokens?)
