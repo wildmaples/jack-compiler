@@ -74,6 +74,16 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
+  def test_has_more_tokens_skips_leading_double_slash_comments_with_newline_code
+    io = StringIO.new("// TODO \nxyz[123]")
+    jack_tokenizer = JackTokenizer.new(io)
+    4.times do
+      assert(jack_tokenizer.has_more_tokens?)
+      jack_tokenizer.advance
+    end
+    refute(jack_tokenizer.has_more_tokens?)
+  end
+
   def test_has_more_tokens_skips_leading_double_slash_comments
     io = StringIO.new("// TODO xyz[123]")
     jack_tokenizer = JackTokenizer.new(io)
@@ -88,6 +98,12 @@ class JackTokenizerTest < Minitest::Test
 
   def test_has_more_tokens_skips_single_asterisk_comment_in_two_lines
     io = StringIO.new("/* TODO \n xyz[123] */")
+    jack_tokenizer = JackTokenizer.new(io)
+    refute(jack_tokenizer.has_more_tokens?)
+  end
+
+  def test_has_more_tokens_skips_multiple_comments
+    io = StringIO.new("/* TODO xyz[123] */ \n // lol")
     jack_tokenizer = JackTokenizer.new(io)
     refute(jack_tokenizer.has_more_tokens?)
   end

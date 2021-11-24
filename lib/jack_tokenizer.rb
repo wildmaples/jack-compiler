@@ -11,15 +11,21 @@ class JackTokenizer
   LETTERS = ("a".."z").to_a + ("A".."Z").to_a
 
   def has_more_tokens?
-    while WHITESPACES.include?(@input[@index])
-      @index += 1
-    end
+    loop do
+      old_index = @index
 
-    if @input[@index] == "/" && @input[@index+1] == "/"
-      @index = @input.index("\n", @index) || @input.length
+      while WHITESPACES.include?(@input[@index])
+        @index += 1
+      end
 
-    elsif @input[@index] == "/" && @input[@index+1] == "*"
-      @index = @input.index("*/", @index) + 2
+      if @input[@index] == "/" && @input[@index+1] == "/"
+        @index = @input.index("\n", @index) || @input.length
+
+      elsif @input[@index] == "/" && @input[@index+1] == "*"
+        @index = @input.index("*/", @index) + 2
+      end
+
+      break if old_index == @index
     end
 
     @index < @input.length
