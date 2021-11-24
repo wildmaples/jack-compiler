@@ -80,6 +80,18 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
+  def test_has_more_tokens_skips_single_asterisk_comment
+    io = StringIO.new("/* TODO xyz[123] */")
+    jack_tokenizer = JackTokenizer.new(io)
+    refute(jack_tokenizer.has_more_tokens?)
+  end
+
+  def test_has_more_tokens_skips_single_asterisk_comment_in_two_lines
+    io = StringIO.new("/* TODO \n xyz[123] */")
+    jack_tokenizer = JackTokenizer.new(io)
+    refute(jack_tokenizer.has_more_tokens?)
+  end
+
   def test_token_type_for_symbol
     io = StringIO.new("{")
     jack_tokenizer = JackTokenizer.new(io)

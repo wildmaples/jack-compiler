@@ -17,6 +17,9 @@ class JackTokenizer
 
     if @input[@index] == "/" && @input[@index+1] == "/"
       @index = @input.index("\n", @index) || @input.length
+
+    elsif @input[@index] == "/" && @input[@index+1] == "*"
+      @index = @input.index("*/", @index) + 2
     end
 
     @index < @input.length
