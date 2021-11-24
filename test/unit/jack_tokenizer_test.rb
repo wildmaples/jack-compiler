@@ -24,8 +24,60 @@ class JackTokenizerTest < Minitest::Test
     refute(jack_tokenizer.has_more_tokens?)
   end
 
-  def test_advance_with_multiple_whitespace
-    skip
+  def test_has_more_tokens_skips_without_spaces
+    io = StringIO.new("xyz[123]")
+    jack_tokenizer = JackTokenizer.new(io)
+    4.times do
+      assert(jack_tokenizer.has_more_tokens?)
+      jack_tokenizer.advance
+    end
+    refute(jack_tokenizer.has_more_tokens?)
+  end
+
+  def test_has_more_tokens_skips_multiple_whitespaces
+    io = StringIO.new("xyz[123]  ")
+    jack_tokenizer = JackTokenizer.new(io)
+    4.times do
+      assert(jack_tokenizer.has_more_tokens?)
+      jack_tokenizer.advance
+    end
+    refute(jack_tokenizer.has_more_tokens?)
+  end
+
+  def test_has_more_tokens_skips_leading_whitespaces
+    io = StringIO.new(" xyz[123]")
+    jack_tokenizer = JackTokenizer.new(io)
+    4.times do
+      assert(jack_tokenizer.has_more_tokens?)
+      jack_tokenizer.advance
+    end
+    refute(jack_tokenizer.has_more_tokens?)
+  end
+
+  def test_has_more_tokens_skips_different_whitespaces
+    io = StringIO.new("xyz[123] \n")
+    jack_tokenizer = JackTokenizer.new(io)
+    4.times do
+      assert(jack_tokenizer.has_more_tokens?)
+      jack_tokenizer.advance
+    end
+    refute(jack_tokenizer.has_more_tokens?)
+  end
+
+  def test_has_more_tokens_skips_trailing_double_slash_comments
+    io = StringIO.new("xyz[123] // TODO")
+    jack_tokenizer = JackTokenizer.new(io)
+    4.times do
+      assert(jack_tokenizer.has_more_tokens?)
+      jack_tokenizer.advance
+    end
+    refute(jack_tokenizer.has_more_tokens?)
+  end
+
+  def test_has_more_tokens_skips_leading_double_slash_comments
+    io = StringIO.new("// TODO xyz[123]")
+    jack_tokenizer = JackTokenizer.new(io)
+    refute(jack_tokenizer.has_more_tokens?)
   end
 
   def test_token_type_for_symbol
@@ -198,5 +250,27 @@ class JackTokenizerTest < Minitest::Test
     jack_tokenizer.advance
     jack_tokenizer.token_type
     assert_equal(:CLASS, jack_tokenizer.key_word)
+  end
+
+  def test_division
+    io = StringIO.new('4 / 2')
+    jack_tokenizer = JackTokenizer.new(io)
+
+    assert jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:INT_CONST, jack_tokenizer.token_type)
+    assert_equal(4, jack_tokenizer.int_val)
+
+    assert jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:SYMBOL, jack_tokenizer.token_type)
+    assert_equal('/', jack_tokenizer.symbol)
+
+    assert jack_tokenizer.has_more_tokens?
+    jack_tokenizer.advance
+    assert_equal(:INT_CONST, jack_tokenizer.token_type)
+    assert_equal(2, jack_tokenizer.int_val)
+
+    refute(jack_tokenizer.has_more_tokens?)
   end
 end

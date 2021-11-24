@@ -4,15 +4,39 @@ class JackTokenizer
     @index = 0
   end
 
+  KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
+  SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
+  DIGITS = %w[0 1 2 3 4 5 6 7 8 9]
+  WHITESPACES = [" ", "\n"]
+  LETTERS = ("a".."z").to_a + ("A".."Z").to_a
+
   def has_more_tokens?
+    while WHITESPACES.include?(@input[@index])
+      @index += 1
+    end
+
+    if @input[@index] == "/" && @input[@index+1] == "/"
+      @index = @input.index("\n", @index) || @input.length
+    end
+
     @index < @input.length
   end
 
   def advance
     if @input[@index] == '"'
       next_index = @input.index('"', @index + 1) + 1
-    else
-      next_index = @input.index(" ", @index)
+    elsif is_start_of_identifier?(@input[@index])
+      next_index = @index
+      while is_body_of_identifier?(@input[next_index])
+        next_index += 1
+      end
+    elsif SYMBOL_TOKENS.include?(@input[@index])
+      next_index = @index + 1
+    elsif DIGITS.include?(@input[@index])
+      next_index = @index
+      while DIGITS.include?(@input[next_index])
+        next_index += 1
+      end
     end
 
     @current_token = @input[@index...next_index]
@@ -29,16 +53,8 @@ class JackTokenizer
       @token_type = :IDENTIFIER
     end
 
-    if next_index.nil?
-      @index = @input.length
-    else
-      @index = next_index + 1
-    end
+    @index = next_index
   end
-
-  KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
-  SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
-  DIGITS = %w[0 1 2 3 4 5 6 7 8 9]
 
   def token_type
     @token_type
@@ -62,5 +78,15 @@ class JackTokenizer
 
   def string_val
     @current_token[1...-1]
+  end
+
+  private
+
+  def is_start_of_identifier?(char)
+    char == "_" || LETTERS.include?(char)
+  end
+
+  def is_body_of_identifier?(char)
+    is_start_of_identifier?(char) || DIGITS.include?(char)
   end
 end
