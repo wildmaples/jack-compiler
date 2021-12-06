@@ -9,8 +9,11 @@ class JackTokenizer
   def has_more_tokens?
     loop do
       old_index = @index
-      skip_whitespace
-      skip_comments
+
+      if (match = @input.match(%r{[ \n]+|//.*$|/\*(.|\n)*\*/}, @index)) && match.begin(0) == @index
+        @index = match.end(0)
+      end
+
       break if old_index == @index
     end
 
@@ -63,19 +66,5 @@ class JackTokenizer
 
   def string_val
     @current_token[1...-1]
-  end
-
-  private
-
-  def skip_whitespace
-    if (match = @input.match(%r{[ \n]*}, @index)) && match.begin(0) == @index
-      @index = match.end(0)
-    end
-  end
-
-  def skip_comments
-    if (match = @input.match(%r{//.*$|/\*(.|\n)*\*/}, @index)) && match.begin(0) == @index
-      @index = match.end(0)
-    end
   end
 end
