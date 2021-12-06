@@ -8,7 +8,6 @@ class JackTokenizer
   SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
   DIGITS = %w[0 1 2 3 4 5 6 7 8 9]
   WHITESPACES = [" ", "\n"]
-  LETTERS = ("a".."z").to_a + ("A".."Z").to_a
 
   def has_more_tokens?
     loop do
@@ -22,20 +21,14 @@ class JackTokenizer
   end
 
   def advance
-    if @input[@index] == '"'
-      next_index = @input.index('"', @index + 1) + 1
-    elsif is_start_of_identifier?(@input[@index])
-      next_index = @index
-      while is_body_of_identifier?(@input[next_index])
-        next_index += 1
-      end
-    elsif SYMBOL_TOKENS.include?(@input[@index])
-      next_index = @index + 1
-    elsif DIGITS.include?(@input[@index])
-      next_index = @index
-      while DIGITS.include?(@input[next_index])
-        next_index += 1
-      end
+    if (match = @input.match(%r{"[^"]*"}, @index)) && match.begin(0) == @index
+      next_index = match.end(0)
+    elsif (match = @input.match(%r{[_a-zA-Z][_a-zA-Z0-9]*}, @index)) && match.begin(0) == @index
+      next_index = match.end(0)
+    elsif (match = @input.match(%r{[{}()\[\].,;+\-*/&|<>=~]}, @index)) && match.begin(0) == @index
+      next_index = match.end(0)
+    elsif (match = @input.match(%r{[0-9]+}, @index)) && match.begin(0) == @index
+      next_index = match.end(0)
     end
 
     @current_token = @input[@index...next_index]
@@ -94,13 +87,5 @@ class JackTokenizer
     elsif @input[@index..@index+1] == "/*"
       @index = @input.index("*/", @index) + 2
     end
-  end
-
-  def is_start_of_identifier?(char)
-    char == "_" || LETTERS.include?(char)
-  end
-
-  def is_body_of_identifier?(char)
-    is_start_of_identifier?(char) || DIGITS.include?(char)
   end
 end
