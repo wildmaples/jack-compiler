@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/jack_tokenizer'
+
+input_file = File.open(ARGV[0])
+tokenizer = JackTokenizer.new(input_file)
+
+while tokenizer.has_more_tokens?
+  tokenizer.advance
+  puts tokenizer.token_type
+  puts tokenizer.symbol.inspect
+end
