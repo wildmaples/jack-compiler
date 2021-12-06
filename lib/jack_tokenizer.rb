@@ -74,10 +74,7 @@ class JackTokenizer
   end
 
   def skip_comments
-    if (match = @input.match(%r{//.*$}, @index)) && match.begin(0) == @index
-      @index = match.end(0)
-
-    elsif (match = @input.match(%r{/\*(.|\n)*\*/}, @index)) && match.begin(0) == @index
+    if (match = @input.match(%r{//.*$|/\*(.|\n)*\*/}, @index)) && match.begin(0) == @index
       @index = match.end(0)
     end
   end
