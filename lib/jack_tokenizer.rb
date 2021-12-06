@@ -5,8 +5,6 @@ class JackTokenizer
   end
 
   KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
-  SYMBOL_TOKENS =  %w[{ } ( ) [ ] . , ; + - * / & | < > = ~]
-  DIGITS = %w[0 1 2 3 4 5 6 7 8 9]
   WHITESPACES = [" ", "\n"]
 
   def has_more_tokens?
@@ -24,27 +22,23 @@ class JackTokenizer
     if (match = @input.match(%r{"[^"]*"}, @index)) && match.begin(0) == @index
       @current_token = match[0]
       @index = match.end(0)
+      @token_type = :STRING_CONST
     elsif (match = @input.match(%r{[_a-zA-Z][_a-zA-Z0-9]*}, @index)) && match.begin(0) == @index
       @current_token = match[0]
       @index = match.end(0)
+      if KEYWORD_TOKENS.include?(@current_token)
+        @token_type = :KEYWORD
+      else
+        @token_type = :IDENTIFIER
+      end
     elsif (match = @input.match(%r{[{}()\[\].,;+\-*/&|<>=~]}, @index)) && match.begin(0) == @index
       @current_token = match[0]
       @index = match.end(0)
+      @token_type = :SYMBOL
     elsif (match = @input.match(%r{[0-9]+}, @index)) && match.begin(0) == @index
       @current_token = match[0]
       @index = match.end(0)
-    end
-
-    if SYMBOL_TOKENS.include?(@current_token)
-      @token_type = :SYMBOL
-    elsif KEYWORD_TOKENS.include?(@current_token)
-      @token_type = :KEYWORD
-    elsif DIGITS.include?(@current_token[0])
       @token_type = :INT_CONST
-    elsif @current_token.start_with?('"')
-      @token_type = :STRING_CONST
-    else
-      @token_type = :IDENTIFIER
     end
   end
 
