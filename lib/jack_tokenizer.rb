@@ -13,18 +13,8 @@ class JackTokenizer
   def has_more_tokens?
     loop do
       old_index = @index
-
-      while WHITESPACES.include?(@input[@index])
-        @index += 1
-      end
-
-      if @input[@index..@index+1] == "//"
-        @index = @input.index("\n", @index) || @input.length
-
-      elsif @input[@index..@index+1] == "/*"
-        @index = @input.index("*/", @index) + 2
-      end
-
+      skip_whitespace
+      skip_comments
       break if old_index == @index
     end
 
@@ -90,6 +80,21 @@ class JackTokenizer
   end
 
   private
+
+  def skip_whitespace
+    while WHITESPACES.include?(@input[@index])
+      @index += 1
+    end
+  end
+
+  def skip_comments
+    if @input[@index..@index+1] == "//"
+      @index = @input.index("\n", @index) || @input.length
+
+    elsif @input[@index..@index+1] == "/*"
+      @index = @input.index("*/", @index) + 2
+    end
+  end
 
   def is_start_of_identifier?(char)
     char == "_" || LETTERS.include?(char)
