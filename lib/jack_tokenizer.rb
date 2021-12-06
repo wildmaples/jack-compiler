@@ -11,12 +11,11 @@ class JackTokenizer
   LETTERS = ("a".."z").to_a + ("A".."Z").to_a
 
   def has_more_tokens?
-    while WHITESPACES.include?(@input[@index])
-      @index += 1
-    end
-
-    if @input[@index] == "/" && @input[@index+1] == "/"
-      @index = @input.index("\n", @index) || @input.length
+    loop do
+      old_index = @index
+      skip_whitespace
+      skip_comments
+      break if old_index == @index
     end
 
     @index < @input.length
@@ -81,6 +80,21 @@ class JackTokenizer
   end
 
   private
+
+  def skip_whitespace
+    while WHITESPACES.include?(@input[@index])
+      @index += 1
+    end
+  end
+
+  def skip_comments
+    if @input[@index..@index+1] == "//"
+      @index = @input.index("\n", @index) || @input.length
+
+    elsif @input[@index..@index+1] == "/*"
+      @index = @input.index("*/", @index) + 2
+    end
+  end
 
   def is_start_of_identifier?(char)
     char == "_" || LETTERS.include?(char)
