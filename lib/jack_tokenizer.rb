@@ -23,16 +23,16 @@ class JackTokenizer
   def advance
     if (match = @input.match(%r{"[^"]*"}, @index)) && match.begin(0) == @index
       @current_token = match[0]
-      next_index = match.end(0)
+      @index = match.end(0)
     elsif (match = @input.match(%r{[_a-zA-Z][_a-zA-Z0-9]*}, @index)) && match.begin(0) == @index
       @current_token = match[0]
-      next_index = match.end(0)
+      @index = match.end(0)
     elsif (match = @input.match(%r{[{}()\[\].,;+\-*/&|<>=~]}, @index)) && match.begin(0) == @index
       @current_token = match[0]
-      next_index = match.end(0)
+      @index = match.end(0)
     elsif (match = @input.match(%r{[0-9]+}, @index)) && match.begin(0) == @index
       @current_token = match[0]
-      next_index = match.end(0)
+      @index = match.end(0)
     end
 
     if SYMBOL_TOKENS.include?(@current_token)
@@ -46,8 +46,6 @@ class JackTokenizer
     else
       @token_type = :IDENTIFIER
     end
-
-    @index = next_index
   end
 
   def token_type
