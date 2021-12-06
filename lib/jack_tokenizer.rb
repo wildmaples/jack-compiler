@@ -5,7 +5,6 @@ class JackTokenizer
   end
 
   KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
-  WHITESPACES = [" ", "\n"]
 
   def has_more_tokens?
     loop do
@@ -69,8 +68,8 @@ class JackTokenizer
   private
 
   def skip_whitespace
-    while WHITESPACES.include?(@input[@index])
-      @index += 1
+    if (match = @input.match(%r{[ \n]*}, @index)) && match.begin(0) == @index
+      @index = match.end(0)
     end
   end
 
