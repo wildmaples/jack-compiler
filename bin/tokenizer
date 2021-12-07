@@ -5,8 +5,9 @@ require_relative '../lib/jack_tokenizer'
 input_file = File.open(ARGV[0])
 tokenizer = JackTokenizer.new(input_file)
 
+puts("<tokens>")
 while tokenizer.has_more_tokens?
   tokenizer.advance
-  puts tokenizer.token_type
-  puts tokenizer.symbol.inspect
+  puts("  <#{tokenizer.token_type.downcase}> #{tokenizer.symbol} </#{tokenizer.token_type.downcase}>")
 end
+puts("</tokens>")
