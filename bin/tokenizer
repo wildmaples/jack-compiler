@@ -16,9 +16,15 @@ while tokenizer.has_more_tokens?
   when :INT_CONST
     token = tokenizer.int_val
     token_type = "integerConstant"
-  else
+  when :KEYWORD
+    token = tokenizer.key_word.downcase
+    token_type = "keyword"
+  when :IDENTIFIER
+    token = tokenizer.identifier
+    token_type = "identifier"
+  when :SYMBOL
     token = tokenizer.symbol
-    token_type = tokenizer.token_type.downcase
+    token_type = "symbol"
   end
 
   puts("  <#{token_type}> #{token} </#{token_type}>")
