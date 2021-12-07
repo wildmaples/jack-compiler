@@ -13,6 +13,9 @@ while tokenizer.has_more_tokens?
   when :STRING_CONST
     token = tokenizer.string_val
     token_type = "stringConstant"
+  when :INT_CONST
+    token = tokenizer.int_val
+    token_type = "integerConstant"
   else
     token = tokenizer.symbol
     token_type = tokenizer.token_type.downcase
