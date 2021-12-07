@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'cgi'
 require_relative '../lib/jack_tokenizer'
 
 input_file = File.open(ARGV[0])
@@ -14,10 +15,10 @@ while tokenizer.has_more_tokens?
     token = tokenizer.string_val
     token_type = "stringConstant"
   when :INT_CONST
-    token = tokenizer.int_val
+    token = tokenizer.int_val.to_s
     token_type = "integerConstant"
   when :KEYWORD
-    token = tokenizer.key_word.downcase
+    token = tokenizer.key_word.downcase.to_s
     token_type = "keyword"
   when :IDENTIFIER
     token = tokenizer.identifier
@@ -27,6 +28,6 @@ while tokenizer.has_more_tokens?
     token_type = "symbol"
   end
 
-  puts("  <#{token_type}> #{token} </#{token_type}>")
+  puts("  <#{token_type}> #{CGI.escapeHTML(token)} </#{token_type}>")
 end
 puts("</tokens>")
