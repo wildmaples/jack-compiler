@@ -9,7 +9,8 @@ puts("<tokens>")
 while tokenizer.has_more_tokens?
   tokenizer.advance
 
-  if tokenizer.token_type == :STRING_CONST
+  case tokenizer.token_type
+  when :STRING_CONST
     token = tokenizer.string_val
     token_type = "stringConstant"
   else
