@@ -13,7 +13,7 @@ class CompilationEngine
     @output.puts("<identifier> #{@tokenizer.identifier} </identifier>")
 
     @tokenizer.has_more_tokens? && @tokenizer.advance
-    @output.puts("<symbol> { </symbol>")
+    @output.puts("<symbol> #{@tokenizer.symbol} </symbol>")
 
     @tokenizer.has_more_tokens? && @tokenizer.advance
     if @tokenizer.token_type == :KEYWORD
@@ -21,7 +21,7 @@ class CompilationEngine
     end
 
     @tokenizer.has_more_tokens? && @tokenizer.advance
-    @output.puts("<symbol> } </symbol>")
+    @output.puts("<symbol> #{@tokenizer.symbol} </symbol>")
     @output.puts("</class>")
   end
 
@@ -35,7 +35,8 @@ class CompilationEngine
     @tokenizer.has_more_tokens? && @tokenizer.advance
     @output.puts("<identifier> #{@tokenizer.identifier} </identifier>")
 
-    @output.puts("<symbol> ; </symbol>")
+    @tokenizer.has_more_tokens? && @tokenizer.advance
+    @output.puts("<symbol> #{@tokenizer.symbol} </symbol>")
     @output.puts("</classVarDec>")
   end
 end

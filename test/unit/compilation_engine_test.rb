@@ -39,7 +39,7 @@ class CompilationEngineTest < Minitest::Test
   end
 
   def test_compile_class_compiles_class_with_class_var_dec
-    input = StringIO.new("class Foo { field int bloop }")
+    input = StringIO.new("class Foo { field int bloop; }")
     output = StringIO.new
     compilation_engine = CompilationEngine.new(input, output)
     compilation_engine.compile_class
@@ -63,7 +63,7 @@ class CompilationEngineTest < Minitest::Test
   end
 
   def test_compile_class_var_dec_for_field_variables
-    input = StringIO.new("field int bloop")
+    input = StringIO.new("field int bloop;")
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
     compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
@@ -85,7 +85,7 @@ class CompilationEngineTest < Minitest::Test
   end
 
   def test_compile_class_var_dec_for_static_variables
-    input = StringIO.new("static int bloop")
+    input = StringIO.new("static int bloop;")
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
     compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
@@ -107,6 +107,7 @@ class CompilationEngineTest < Minitest::Test
   end
 
   def test_compile_class_var_dec_for_different_variable_type
+    input = StringIO.new("static boolean bloop;")
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
     compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
@@ -128,6 +129,7 @@ class CompilationEngineTest < Minitest::Test
   end
 
   def test_compile_class_var_dec_for_different_variable_name
+    input = StringIO.new("static boolean bleep;")
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
     compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
