@@ -17,18 +17,22 @@ class CompilationEngine
 
     @tokenizer.has_more_tokens? && @tokenizer.advance
     if @tokenizer.token_type == :KEYWORD
-      @output.puts <<~HEREDOC
-        <classVarDec>
-        <keyword> field </keyword>
-        <keyword> int </keyword>
-        <identifier> bloop </identifier>
-        <symbol> ; </symbol>
-        </classVarDec>
-      HEREDOC
+      compile_class_var_dec
     end
 
     @tokenizer.has_more_tokens? && @tokenizer.advance
     @output.puts("<symbol> } </symbol>")
     @output.puts("</class>")
+  end
+
+  def compile_class_var_dec
+    @output.puts <<~HEREDOC
+      <classVarDec>
+      <keyword> field </keyword>
+      <keyword> int </keyword>
+      <identifier> bloop </identifier>
+      <symbol> ; </symbol>
+      </classVarDec>
+    HEREDOC
   end
 end
