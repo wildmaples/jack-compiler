@@ -26,13 +26,11 @@ class CompilationEngine
   end
 
   def compile_class_var_dec
-    @output.puts <<~HEREDOC
-      <classVarDec>
-      <keyword> field </keyword>
-      <keyword> int </keyword>
-      <identifier> bloop </identifier>
-      <symbol> ; </symbol>
-      </classVarDec>
-    HEREDOC
+    @output.puts("<classVarDec>")
+    @output.puts("<keyword> #{@tokenizer.key_word.downcase.to_s} </keyword>")
+    @output.puts("<keyword> int </keyword>")
+    @output.puts("<identifier> bloop </identifier>")
+    @output.puts("<symbol> ; </symbol>")
+    @output.puts("</classVarDec>")
   end
 end
