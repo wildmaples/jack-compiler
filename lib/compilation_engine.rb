@@ -16,8 +16,10 @@ class CompilationEngine
     @output.puts("<symbol> #{@tokenizer.symbol} </symbol>")
 
     @tokenizer.has_more_tokens? && @tokenizer.advance
-    if @tokenizer.token_type == :KEYWORD
+    if [:STATIC, :FIELD].include?(@tokenizer.key_word)
       compile_class_var_dec
+    elsif [:CONSTRUCTOR, :FUNCTION, :METHOD, :VOID].include?(@tokenizer.key_word)
+      compile_subroutine
     end
 
     @tokenizer.has_more_tokens? && @tokenizer.advance
@@ -38,5 +40,9 @@ class CompilationEngine
     @tokenizer.has_more_tokens? && @tokenizer.advance
     @output.puts("<symbol> #{@tokenizer.symbol} </symbol>")
     @output.puts("</classVarDec>")
+  end
+
+  def compile_subroutine
+    raise NotImplementedError
   end
 end
