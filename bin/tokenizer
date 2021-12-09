@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'cgi'
+require_relative '../lib/jack_tokenizer'
+
+input_file = File.open(ARGV[0])
+tokenizer = JackTokenizer.new(input_file)
+
+puts("<tokens>")
+while tokenizer.has_more_tokens?
+  tokenizer.advance
+
+  case tokenizer.token_type
+  when :STRING_CONST
+    token = tokenizer.string_val
+    token_type = "stringConstant"
+  when :INT_CONST
+    token = tokenizer.int_val.to_s
+    token_type = "integerConstant"
+  when :KEYWORD
+    token = tokenizer.key_word.downcase.to_s
+    token_type = "keyword"
+  when :IDENTIFIER
+    token = tokenizer.identifier
+    token_type = "identifier"
+  when :SYMBOL
+    token = tokenizer.symbol
+    token_type = "symbol"
+  end
+
+  puts("  <#{token_type}> #{CGI.escapeHTML(token)} </#{token_type}>")
+end
+puts("</tokens>")
