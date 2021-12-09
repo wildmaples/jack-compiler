@@ -149,4 +149,33 @@ class CompilationEngineTest < Minitest::Test
 
     assert_equal(expected, output.string)
   end
+
+  def test_compile_subroutine_empty_method
+    input = StringIO.new("method void foo() { }")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_subroutine
+
+    expected = <<~HEREDOC
+      <subroutineDec>
+      <keyword> method </keyword>
+      <keyword> void </keyword>
+      <identifier> foo </identifier>
+      <symbol> ( </symbol>
+      <parameterList>
+      </parameterList>
+      <symbol> ) </symbol>
+      <subroutineBody>
+      <symbol> { </symbol>
+      <symbol> } </symbol>
+      </subroutineBody>
+      </subroutineDec>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
 end
