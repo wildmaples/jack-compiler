@@ -1,7 +1,7 @@
 class CompilationEngine
-  def initialize(input, output)
+  def initialize(input, output, tokenizer: JackTokenizer.new(input))
     @output = output
-    @tokenizer = JackTokenizer.new(input)
+    @tokenizer = tokenizer
   end
 
   def compile_class
