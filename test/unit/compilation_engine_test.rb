@@ -106,8 +106,7 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
-  def test_compile_class_var_dec_for_static_variables_different_type
-    input = StringIO.new("static boolean bloop")
+  def test_compile_class_var_dec_for_different_variable_type
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
     compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
@@ -128,8 +127,7 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
-  def test_compile_class_var_dec_for_static_variables_different_type
-    input = StringIO.new("static boolean bleep")
+  def test_compile_class_var_dec_for_different_variable_name
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
     compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
