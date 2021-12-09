@@ -28,7 +28,10 @@ class CompilationEngine
   def compile_class_var_dec
     @output.puts("<classVarDec>")
     @output.puts("<keyword> #{@tokenizer.key_word.downcase.to_s} </keyword>")
-    @output.puts("<keyword> int </keyword>")
+
+    @tokenizer.has_more_tokens? && @tokenizer.advance
+    @output.puts("<keyword> #{@tokenizer.key_word.downcase.to_s} </keyword>")
+    
     @output.puts("<identifier> bloop </identifier>")
     @output.puts("<symbol> ; </symbol>")
     @output.puts("</classVarDec>")

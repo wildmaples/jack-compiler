@@ -105,4 +105,26 @@ class CompilationEngineTest < Minitest::Test
 
     assert_equal(expected, output.string)
   end
+
+  def test_compile_class_var_dec_for_static_variables_different_type
+    input = StringIO.new("static boolean bloop")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_class_var_dec
+
+    expected = <<~HEREDOC
+      <classVarDec>
+      <keyword> static </keyword>
+      <keyword> boolean </keyword>
+      <identifier> bloop </identifier>
+      <symbol> ; </symbol>
+      </classVarDec>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
 end
