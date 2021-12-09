@@ -10,10 +10,10 @@ class CompilationEngineTest < Minitest::Test
 
     expected = <<~HEREDOC
       <class>
-        <keyword> class </keyword>
-        <identifier> Foo </identifier>
-        <symbol> { </symbol>
-        <symbol> } </symbol>
+      <keyword> class </keyword>
+      <identifier> Foo </identifier>
+      <symbol> { </symbol>
+      <symbol> } </symbol>
       </class>
     HEREDOC
 
@@ -28,10 +28,10 @@ class CompilationEngineTest < Minitest::Test
 
     expected = <<~HEREDOC
       <class>
-        <keyword> class </keyword>
-        <identifier> Bar </identifier>
-        <symbol> { </symbol>
-        <symbol> } </symbol>
+      <keyword> class </keyword>
+      <identifier> Bar </identifier>
+      <symbol> { </symbol>
+      <symbol> } </symbol>
       </class>
     HEREDOC
 
@@ -46,16 +46,16 @@ class CompilationEngineTest < Minitest::Test
 
     expected = <<~HEREDOC
       <class>
-        <keyword> class </keyword>
-        <identifier> Foo </identifier>
-        <symbol> { </symbol>
-        <classVarDec>
-          <keyword> field </keyword>
-          <keyword> int </keyword>
-          <identifier> bloop </identifier>
-          <symbol> ; </symbol>
-        </classVarDec>
-        <symbol> } </symbol>
+      <keyword> class </keyword>
+      <identifier> Foo </identifier>
+      <symbol> { </symbol>
+      <classVarDec>
+      <keyword> field </keyword>
+      <keyword> int </keyword>
+      <identifier> bloop </identifier>
+      <symbol> ; </symbol>
+      </classVarDec>
+      <symbol> } </symbol>
       </class>
     HEREDOC
 
