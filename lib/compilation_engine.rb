@@ -31,8 +31,10 @@ class CompilationEngine
 
     @tokenizer.has_more_tokens? && @tokenizer.advance
     @output.puts("<keyword> #{@tokenizer.key_word.downcase.to_s} </keyword>")
-    
-    @output.puts("<identifier> bloop </identifier>")
+
+    @tokenizer.has_more_tokens? && @tokenizer.advance
+    @output.puts("<identifier> #{@tokenizer.identifier} </identifier>")
+
     @output.puts("<symbol> ; </symbol>")
     @output.puts("</classVarDec>")
   end
