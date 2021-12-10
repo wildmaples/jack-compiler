@@ -70,7 +70,15 @@ class CompilationEngine
     output_token
     advance_and_output_token
     advance_and_output_token
-    advance_and_output_token
+
+    advance
+    while @tokenizer.symbol != ";"
+      output_token
+      advance_and_output_token
+      advance
+    end
+
+    output_token
     @output.puts("</varDec>")
   end
 

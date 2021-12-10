@@ -258,4 +258,30 @@ class CompilationEngineTest < Minitest::Test
 
     assert_equal(expected, output.string)
   end
+
+  def test_compile_var_dec_multiple_variables
+    input = StringIO.new("var int bloop, bleep, bluup;")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_var_dec
+
+    expected = <<~HEREDOC
+      <varDec>
+      <keyword> var </keyword>
+      <keyword> int </keyword>
+      <identifier> bloop </identifier>
+      <symbol> , </symbol>
+      <identifier> bleep </identifier>
+      <symbol> , </symbol>
+      <identifier> bluup </identifier>
+      <symbol> ; </symbol>
+      </varDec>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
 end
