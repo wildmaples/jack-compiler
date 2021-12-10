@@ -59,6 +59,15 @@ class CompilationEngine
 
   private
 
+  def compile_subroutine_body
+    @output.puts("<subroutineBody>")
+
+    advance_and_output_token
+    advance_and_output_token
+
+    @output.puts("</subroutineBody>")
+  end
+
   def advance_and_output_token
     advance
     output_token
@@ -88,14 +97,5 @@ class CompilationEngine
     end
 
     @output.puts("<#{token_type}> #{CGI.escapeHTML(token)} </#{token_type}>")
-  end
-
-  def compile_subroutine_body
-    @output.puts("<subroutineBody>")
-
-    advance_and_output_token
-    advance_and_output_token
-
-    @output.puts("</subroutineBody>")
   end
 end
