@@ -232,4 +232,30 @@ class CompilationEngineTest < Minitest::Test
 
     assert_equal(expected, output.string)
   end
+
+  def test_compile_var_dec_one_variable
+    input = StringIO.new("var int bloop;")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+
+    assert tokenizer.token_type, :KEY_WORD
+    assert tokenizer.key_word, "var"
+
+    compilation_engine.compile_var_dec
+
+    expected = <<~HEREDOC
+      <varDec>
+      <keyword> var </keyword>
+      <keyword> int </keyword>
+      <identifier> bloop </identifier>
+      <symbol> ; </symbol>
+      </varDec>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
 end

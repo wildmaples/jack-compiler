@@ -65,6 +65,15 @@ class CompilationEngine
     @output.puts("</parameterList>")
   end
 
+  def compile_var_dec
+    @output.puts("<varDec>")
+    output_token
+    advance_and_output_token
+    advance_and_output_token
+    advance_and_output_token
+    @output.puts("</varDec>")
+  end
+
   private
 
   def compile_subroutine_body
