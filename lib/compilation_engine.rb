@@ -46,8 +46,9 @@ class CompilationEngine
     advance_and_output_token
 
     compile_parameter_list
-
     output_token
+    
+    advance
     compile_subroutine_body
 
     @output.puts("</subroutineDec>")
@@ -87,7 +88,13 @@ class CompilationEngine
   def compile_subroutine_body
     @output.puts("<subroutineBody>")
 
-    advance_and_output_token
+    output_token
+
+    advance
+    if tokenizer.key_word == :VAR
+      compile_var_dec
+    end
+
     advance_and_output_token
 
     @output.puts("</subroutineBody>")
