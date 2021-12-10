@@ -15,9 +15,10 @@ class CompilationEngine
     advance_and_output_token
 
     advance
-    if [:STATIC, :FIELD].include?(@tokenizer.key_word)
+    case @tokenizer.key_word
+    when :STATIC, :FIELD
       compile_class_var_dec
-    elsif [:CONSTRUCTOR, :FUNCTION, :METHOD, :VOID].include?(@tokenizer.key_word)
+    when :CONSTRUCTOR, :FUNCTION, :METHOD, :VOID
       compile_subroutine
     end
 
