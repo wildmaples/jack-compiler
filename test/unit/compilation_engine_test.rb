@@ -178,4 +178,58 @@ class CompilationEngineTest < Minitest::Test
 
     assert_equal(expected, output.string)
   end
+
+  def test_compile_subroutine_with_parameters
+    input = StringIO.new("method void foo(int bloop) { }")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_subroutine
+
+    expected = <<~HEREDOC
+      <subroutineDec>
+      <keyword> method </keyword>
+      <keyword> void </keyword>
+      <identifier> foo </identifier>
+      <symbol> ( </symbol>
+      <parameterList>
+      <keyword> int </keyword>
+      <identifier> bloop </identifier>
+      </parameterList>
+      <symbol> ) </symbol>
+      <subroutineBody>
+      <symbol> { </symbol>
+      <symbol> } </symbol>
+      </subroutineBody>
+      </subroutineDec>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
+  def test_compile_parameter_list
+    input = StringIO.new("(int bloop, char bleep)")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_parameter_list
+
+    expected = <<~HEREDOC
+      <parameterList>
+      <keyword> int </keyword>
+      <identifier> bloop </identifier>
+      <symbol> , </symbol>
+      <keyword> char </keyword>
+      <identifier> bleep </identifier>
+      </parameterList>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
 end

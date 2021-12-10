@@ -46,7 +46,7 @@ class CompilationEngine
 
     compile_parameter_list
 
-    advance_and_output_token
+    output_token
     compile_subroutine_body
 
     @output.puts("</subroutineDec>")
@@ -54,6 +54,13 @@ class CompilationEngine
 
   def compile_parameter_list
     @output.puts("<parameterList>")
+
+    advance
+    while @tokenizer.symbol != ")"
+      output_token
+      advance
+    end
+
     @output.puts("</parameterList>")
   end
 
