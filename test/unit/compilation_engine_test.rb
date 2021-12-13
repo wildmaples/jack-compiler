@@ -365,4 +365,45 @@ class CompilationEngineTest < Minitest::Test
 
     assert_equal(expected, output.string)
   end
+
+  def test_compile_subroutine_with_variable_declaration_and_statements
+    input = StringIO.new("method void foo() { var int bloop; return; }")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_subroutine
+
+    expected = <<~HEREDOC
+      <subroutineDec>
+      <keyword> method </keyword>
+      <keyword> void </keyword>
+      <identifier> foo </identifier>
+      <symbol> ( </symbol>
+      <parameterList>
+      </parameterList>
+      <symbol> ) </symbol>
+      <subroutineBody>
+      <symbol> { </symbol>
+      <varDec>
+      <keyword> var </keyword>
+      <keyword> int </keyword>
+      <identifier> bloop </identifier>
+      <symbol> ; </symbol>
+      </varDec>
+      <statements>
+      <returnStatement>
+      <keyword> return </keyword>
+      <symbol> ; </symbol>
+      </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+      </subroutineBody>
+      </subroutineDec>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
 end

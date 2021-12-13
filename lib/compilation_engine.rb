@@ -117,6 +117,11 @@ class CompilationEngine
       compile_var_dec
     end
 
+    advance
+    if tokenizer.token_type == :KEYWORD
+      compile_statements
+    end
+
     advance_and_output_token
 
     @output.puts("</subroutineBody>")
