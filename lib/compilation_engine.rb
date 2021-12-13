@@ -104,6 +104,10 @@ class CompilationEngine
         compile_return
       when :LET
         compile_let
+      when :WHILE
+        compile_while
+      when :IF
+        compile_if
       end
     end
 

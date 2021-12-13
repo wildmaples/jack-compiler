@@ -392,8 +392,14 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
-  def test_compile_statements_with_let_and_return
-    input = StringIO.new("let bloop = bloop; return;")
+  def test_compile_statements_with_let_return_while_and_if
+    statements = <<~HEREDOC
+      while (true) { }
+      if (false) { } else { }
+      let bloop = bloop;
+      return;
+    HEREDOC
+    input = StringIO.new(statements)
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
     compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
@@ -404,6 +410,33 @@ class CompilationEngineTest < Minitest::Test
 
     expected = <<~HEREDOC
       <statements>
+      <whileStatement>
+      <keyword> while </keyword>
+      <symbol> ( </symbol>
+      <expression>
+      <term>
+      <keyword> true </keyword>
+      </term>
+      </expression>
+      <symbol> ) </symbol>
+      <symbol> { </symbol>
+      <symbol> } </symbol>
+      </whileStatement>
+      <ifStatement>
+      <keyword> if </keyword>
+      <symbol> ( </symbol>
+      <expression>
+      <term>
+      <keyword> false </keyword>
+      </term>
+      </expression>
+      <symbol> ) </symbol>
+      <symbol> { </symbol>
+      <symbol> } </symbol>
+      <keyword> else </keyword>
+      <symbol> { </symbol>
+      <symbol> } </symbol>
+      </ifStatement>
       <letStatement>
       <keyword> let </keyword>
       <identifier> bloop </identifier>
