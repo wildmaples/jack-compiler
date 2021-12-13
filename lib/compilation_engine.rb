@@ -141,7 +141,7 @@ class CompilationEngine
 
   def compile_term
     @output.puts("<term>")
-    output_token # identifier
+    output_token # int / str / keyword / identifier / subroutine call / expression / unary op
     @output.puts("</term>")
   end
 
