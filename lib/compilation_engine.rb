@@ -80,6 +80,7 @@ class CompilationEngine
     end
 
     output_token
+    advance
     @output.puts("</varDec>")
   end
 
@@ -113,11 +114,10 @@ class CompilationEngine
     output_token
 
     advance
-    if tokenizer.token_type == :KEYWORD && tokenizer.key_word == :VAR
+    while @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == :VAR
       compile_var_dec
     end
 
-    advance
     if tokenizer.token_type == :KEYWORD
       compile_statements
     end
