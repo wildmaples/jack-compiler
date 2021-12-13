@@ -511,6 +511,34 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
+  def test_compile_while_simple_loop
+    input = StringIO.new("while (true) { }")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_while
+
+    expected = <<~HEREDOC
+      <whileStatement>
+      <keyword> while </keyword>
+      <symbol> ( </symbol>
+      <expression>
+      <term>
+      <keyword> true </keyword>
+      </term>
+      </expression>
+      <symbol> ) </symbol>
+      <symbol> { </symbol>
+      <symbol> } </symbol>
+      </whileStatement>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
   def test_compile_subroutine_with_variable_declaration_and_statements
     input = StringIO.new("method void foo() { var int bloop; return; }")
     output = StringIO.new

@@ -143,6 +143,19 @@ class CompilationEngine
     @output.puts("</letStatement>")
   end
 
+  def compile_while
+    @output.puts("<whileStatement>")
+    output_token # while
+
+    output_token # (
+    compile_expression
+    output_token # )
+
+    output_token # {
+    output_token # }
+    @output.puts("</whileStatement>")
+  end
+
   def compile_expression
     @output.puts("<expression>")
     compile_term
