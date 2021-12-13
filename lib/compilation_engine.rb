@@ -125,6 +125,13 @@ class CompilationEngine
     @output.puts("<letStatement>")
     output_token # let
     output_token # varName
+
+    if @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == "["
+      output_token # [
+      compile_expression
+      output_token # ] 
+    end
+
     output_token # =
 
     compile_expression # expression

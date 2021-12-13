@@ -444,6 +444,40 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
+  def test_compile_let_compiles_let_statement_with_expression
+    input = StringIO.new("let bloop[1] = bloop;")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_let
+
+    expected = <<~HEREDOC
+      <letStatement>
+      <keyword> let </keyword>
+      <identifier> bloop </identifier>
+      <symbol> [ </symbol>
+      <expression>
+      <term>
+      <integerConstant> 1 </integerConstant>
+      </term>
+      </expression>
+      <symbol> ] </symbol>
+      <symbol> = </symbol>
+      <expression>
+      <term>
+      <identifier> bloop </identifier>
+      </term>
+      </expression>
+      <symbol> ; </symbol>
+      </letStatement>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
   def test_compile_subroutine_with_variable_declaration_and_statements
     input = StringIO.new("method void foo() { var int bloop; return; }")
     output = StringIO.new
