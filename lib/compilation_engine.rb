@@ -35,7 +35,7 @@ class CompilationEngine
     output_token # type
     output_token # varName
 
-    while @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ","
+    while is_symbol_token_and_equal?(",")
       output_token # ,
       output_token # varName
     end
@@ -65,11 +65,11 @@ class CompilationEngine
   def compile_parameter_list
     @output.puts("<parameterList>")
 
-    unless @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ")"
+    unless is_symbol_token_and_equal?(")")
       output_token # type
       output_token # varName
 
-      while @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ","
+      while is_symbol_token_and_equal?(",")
         output_token # ,
         output_token # type
         output_token # varName
@@ -85,7 +85,7 @@ class CompilationEngine
     output_token # type
     output_token # varName
 
-    while @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ","
+    while is_symbol_token_and_equal?(",")
       output_token # ,
       output_token # varName
     end
@@ -98,7 +98,7 @@ class CompilationEngine
   def compile_statements
     @output.puts("<statements>")
 
-    until !@tokenizer.has_more_tokens? || (@tokenizer.token_type == :SYMBOL && @tokenizer.symbol == "}")
+    until !@tokenizer.has_more_tokens? || is_symbol_token_and_equal?("}")
       if tokenizer.token_type == :KEYWORD && tokenizer.key_word == :RETURN
         compile_return
       end
@@ -112,7 +112,7 @@ class CompilationEngine
 
     output_token # return
 
-    unless @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ";"
+    unless is_symbol_token_and_equal?(";")
       compile_expression
     end
 
@@ -126,10 +126,10 @@ class CompilationEngine
     output_token # let
     output_token # varName
 
-    if @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == "["
+    if is_symbol_token_and_equal?("[")
       output_token # [
       compile_expression
-      output_token # ] 
+      output_token # ]
     end
 
     output_token # =
@@ -197,5 +197,9 @@ class CompilationEngine
 
     @output.puts("<#{token_type}> #{CGI.escapeHTML(token)} </#{token_type}>")
     advance
+  end
+
+  def is_symbol_token_and_equal?(symbol)
+    @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == symbol
   end
 end
