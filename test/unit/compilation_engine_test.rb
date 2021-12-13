@@ -859,7 +859,7 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
-  def test_compile_do_simple_subroutine
+  def test_compile_do_simple_chained_subroutine
     input = StringIO.new("do bloop.send();")
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
@@ -877,6 +877,42 @@ class CompilationEngineTest < Minitest::Test
       <identifier> send </identifier>
       <symbol> ( </symbol>
       <expressionList>
+      </expressionList>
+      <symbol> ) </symbol>
+      <symbol> ; </symbol>
+      </doStatement>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
+  def test_compile_do_with_arguments
+    input = StringIO.new("do bloop(1, 2);")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_do
+
+    expected = <<~HEREDOC
+      <doStatement>
+      <keyword> do </keyword>
+      <identifier> bloop </identifier>
+      <symbol> ( </symbol>
+      <expressionList>
+      <expression>
+      <term>
+      <integerConstant> 1 </integerConstant>
+      </term>
+      </expression>
+      <symbol> , </symbol>
+      <expression>
+      <term>
+      <integerConstant> 2 </integerConstant>
+      </term>
+      </expression>
       </expressionList>
       <symbol> ) </symbol>
       <symbol> ; </symbol>
