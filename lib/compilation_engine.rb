@@ -212,6 +212,13 @@ class CompilationEngine
     @output.puts("</expressionList>")
   end
 
+  def compile_do
+    @output.puts("<doStatement>")
+    output_token # do
+    compile_subroutine_call
+    @output.puts("</doStatement>")
+  end
+
   def compile_term
     @output.puts("<term>")
     output_token # int / str / keyword / identifier / subroutine call / expression / unary op
@@ -236,6 +243,14 @@ class CompilationEngine
     output_token # }
 
     @output.puts("</subroutineBody>")
+  end
+
+  def compile_subroutine_call
+    output_token # subroutineName
+    output_token # (
+    compile_expression_list
+    output_token # )
+    output_token # ;
   end
 
   def advance
