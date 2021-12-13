@@ -47,7 +47,7 @@ class CompilationEngine
 
     compile_parameter_list
     output_token
-    
+
     advance
     compile_subroutine_body
 
@@ -58,7 +58,7 @@ class CompilationEngine
     @output.puts("<parameterList>")
 
     advance
-    while @tokenizer.symbol != ")"
+    until @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ")"
       output_token
       advance
     end
@@ -73,7 +73,7 @@ class CompilationEngine
     advance_and_output_token
 
     advance
-    while @tokenizer.symbol != ";"
+    until @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ";"
       output_token
       advance_and_output_token
       advance
@@ -91,7 +91,7 @@ class CompilationEngine
     output_token
 
     advance
-    if tokenizer.key_word == :VAR
+    if tokenizer.token_type == :KEYWORD && tokenizer.key_word == :VAR
       compile_var_dec
     end
 
