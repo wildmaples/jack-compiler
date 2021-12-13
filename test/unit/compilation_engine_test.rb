@@ -473,4 +473,23 @@ class CompilationEngineTest < Minitest::Test
 
     assert_equal(expected, output.string)
   end
+
+  def test_compile_term_identifier
+    input = StringIO.new("foo")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_term
+
+    expected = <<~HEREDOC
+      <term>
+      <identifier> foo </identifier>
+      </term>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
 end

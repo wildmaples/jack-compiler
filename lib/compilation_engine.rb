@@ -117,6 +117,12 @@ class CompilationEngine
     @output.puts("</returnStatement>")
   end
 
+  def compile_term
+    @output.puts("<term>")
+    output_token # identifier
+    @output.puts("</term>")
+  end
+
   private
 
   def compile_subroutine_body
