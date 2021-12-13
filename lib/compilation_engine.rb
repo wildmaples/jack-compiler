@@ -161,6 +161,24 @@ class CompilationEngine
     @output.puts("</whileStatement>")
   end
 
+  def compile_if
+    @output.puts("<ifStatement>")
+    output_token # if
+
+    output_token # (
+    compile_expression
+    output_token # )
+
+    output_token # {
+
+    until is_symbol_token_and_equal?("}")
+      compile_statements
+    end
+    
+    output_token # }
+    @output.puts("</ifStatement>")
+  end
+
   def compile_expression
     @output.puts("<expression>")
     compile_term
