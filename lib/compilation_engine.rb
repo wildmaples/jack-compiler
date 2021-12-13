@@ -121,6 +121,18 @@ class CompilationEngine
     @output.puts("</returnStatement>")
   end
 
+  def compile_let
+    @output.puts("<letStatement>")
+    output_token # let
+    output_token # varName
+    output_token # =
+
+    compile_expression # expression
+    
+    output_token # ;
+    @output.puts("</letStatement>")
+  end
+
   def compile_expression
     @output.puts("<expression>")
     compile_term
