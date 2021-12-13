@@ -10,11 +10,17 @@ class CompilationEngine
 
   def compile_class
     @output.puts("<class>")
-    advance_and_output_token
-    advance_and_output_token
-    advance_and_output_token
-
     advance
+
+    output_token # class
+    advance
+
+    output_token # className
+    advance
+
+    output_token # {
+    advance
+
     case @tokenizer.key_word
     when :STATIC, :FIELD
       compile_class_var_dec
@@ -22,33 +28,50 @@ class CompilationEngine
       compile_subroutine
     end
 
-    advance_and_output_token
+    advance
+
+    output_token # }
+
     @output.puts("</class>")
   end
 
   def compile_class_var_dec
     @output.puts("<classVarDec>")
-    output_token
 
-    advance_and_output_token
-    advance_and_output_token
-    advance_and_output_token
+    output_token # static / field
+    advance
+
+    output_token # type
+    advance
+
+    output_token # varName
+    advance
+
+    output_token # semicolon
+    # advance
+
     @output.puts("</classVarDec>")
   end
 
   def compile_subroutine
     @output.puts("<subroutineDec>")
 
-    output_token
+    output_token # constructor / function / method
+    advance
 
-    advance_and_output_token
-    advance_and_output_token
-    advance_and_output_token
+    output_token # void / type
+    advance
+
+    output_token # subroutineName
+    advance
+
+    output_token # (
 
     compile_parameter_list
-    output_token
 
+    output_token # )
     advance
+
     compile_subroutine_body
 
     @output.puts("</subroutineDec>")
@@ -58,8 +81,10 @@ class CompilationEngine
     @output.puts("<parameterList>")
 
     advance
+
     until @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ")"
-      output_token
+      # TODO: one parameter can be output in one iteration
+      output_token # type / varName / ,
       advance
     end
 
@@ -68,19 +93,27 @@ class CompilationEngine
 
   def compile_var_dec
     @output.puts("<varDec>")
-    output_token
-    advance_and_output_token
-    advance_and_output_token
-
+    output_token # var
     advance
+
+    output_token # type
+    advance
+
+    output_token #varName
+    advance
+
+    # TODO: only enter loop when the token is a comma
     until @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ";"
-      output_token
-      advance_and_output_token
+      output_token # ,
+      advance
+
+      output_token # varName
       advance
     end
 
-    output_token
+    output_token # ;
     advance
+
     @output.puts("</varDec>")
   end
 
@@ -99,8 +132,10 @@ class CompilationEngine
   def compile_return
     @output.puts("<returnStatement>")
 
-    output_token
-    advance_and_output_token
+    output_token # return
+    advance
+
+    output_token # ;
     advance
 
     @output.puts("</returnStatement>")
@@ -111,9 +146,9 @@ class CompilationEngine
   def compile_subroutine_body
     @output.puts("<subroutineBody>")
 
-    output_token
-
+    output_token # {
     advance
+
     while @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == :VAR
       compile_var_dec
     end
@@ -122,14 +157,11 @@ class CompilationEngine
       compile_statements
     end
 
-    advance_and_output_token
+    advance
+
+    output_token # }
 
     @output.puts("</subroutineBody>")
-  end
-
-  def advance_and_output_token
-    advance
-    output_token
   end
 
   def advance
