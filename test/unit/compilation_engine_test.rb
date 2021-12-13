@@ -392,6 +392,31 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
+  def test_compile_return_returns_expression
+    input = StringIO.new("return bloop;")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_return
+
+    expected = <<~HEREDOC
+      <returnStatement>
+      <keyword> return </keyword>
+      <expression>
+      <term>
+      <identifier> bloop </identifier>
+      </term>
+      </expression>
+      <symbol> ; </symbol>
+      </returnStatement>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
   def test_compile_subroutine_with_variable_declaration_and_statements
     input = StringIO.new("method void foo() { var int bloop; return; }")
     output = StringIO.new
@@ -493,7 +518,7 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
-  def test_compile_expression_of_single_term
+  def test_compile_expression_of_single_expression
     input = StringIO.new("foo")
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)

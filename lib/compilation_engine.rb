@@ -112,6 +112,10 @@ class CompilationEngine
 
     output_token # return
 
+    unless @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ";"
+      compile_expression
+    end
+
     output_token # ;
 
     @output.puts("</returnStatement>")
