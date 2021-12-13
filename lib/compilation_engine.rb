@@ -117,6 +117,12 @@ class CompilationEngine
     @output.puts("</returnStatement>")
   end
 
+  def compile_expression
+    @output.puts("<expression>")
+    compile_term
+    @output.puts("</expression>")
+  end
+
   def compile_term
     @output.puts("<term>")
     output_token # identifier
