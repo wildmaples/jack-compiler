@@ -197,6 +197,12 @@ class CompilationEngine
     @output.puts("</expression>")
   end
 
+  def compile_expression_list
+    @output.puts("<expressionList>")
+    compile_expression
+    @output.puts("</expressionList>")
+  end
+
   def compile_term
     @output.puts("<term>")
     output_token # int / str / keyword / identifier / subroutine call / expression / unary op
