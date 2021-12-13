@@ -152,6 +152,11 @@ class CompilationEngine
     output_token # )
 
     output_token # {
+
+    until is_symbol_token_and_equal?("}")
+      compile_statements
+    end
+
     output_token # }
     @output.puts("</whileStatement>")
   end
