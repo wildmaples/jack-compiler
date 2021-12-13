@@ -99,8 +99,11 @@ class CompilationEngine
     @output.puts("<statements>")
 
     until !@tokenizer.has_more_tokens? || is_symbol_token_and_equal?("}")
-      if tokenizer.token_type == :KEYWORD && tokenizer.key_word == :RETURN
+      case @tokenizer.key_word
+      when :RETURN
         compile_return
+      when :LET
+        compile_let
       end
     end
 
