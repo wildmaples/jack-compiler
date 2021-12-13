@@ -28,8 +28,6 @@ class CompilationEngine
       compile_subroutine
     end
 
-    advance
-
     output_token # }
 
     @output.puts("</class>")
@@ -48,7 +46,7 @@ class CompilationEngine
     advance
 
     output_token # semicolon
-    # advance
+    advance
 
     @output.puts("</classVarDec>")
   end
@@ -66,6 +64,7 @@ class CompilationEngine
     advance
 
     output_token # (
+    advance
 
     compile_parameter_list
 
@@ -80,12 +79,23 @@ class CompilationEngine
   def compile_parameter_list
     @output.puts("<parameterList>")
 
-    advance
-
-    until @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ")"
-      # TODO: one parameter can be output in one iteration
-      output_token # type / varName / ,
+    unless @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ")"
+      output_token # type
       advance
+
+      output_token # varName
+      advance
+
+      while @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ","
+        output_token # ,
+        advance
+
+        output_token # type
+        advance
+
+        output_token # varName
+        advance
+      end
     end
 
     @output.puts("</parameterList>")
@@ -157,9 +167,8 @@ class CompilationEngine
       compile_statements
     end
 
-    advance
-
     output_token # }
+    advance
 
     @output.puts("</subroutineBody>")
   end

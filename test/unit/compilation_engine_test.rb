@@ -211,7 +211,7 @@ class CompilationEngineTest < Minitest::Test
   end
 
   def test_compile_parameter_list
-    input = StringIO.new("(int bloop, char bleep)")
+    input = StringIO.new("int bloop, char bleep")
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
     compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
