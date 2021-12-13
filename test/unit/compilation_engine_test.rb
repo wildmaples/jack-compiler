@@ -805,6 +805,35 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
+  def test_compile_expression_list_multiple_expressions
+    input = StringIO.new("bloop, \"bloop\"")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_expression_list
+
+    expected = <<~HEREDOC
+      <expressionList>
+      <expression>
+      <term>
+      <identifier> bloop </identifier>
+      </term>
+      </expression>
+      <symbol> , </symbol>
+      <expression>
+      <term>
+      <stringConstant> bloop </stringConstant>
+      </term>
+      </expression>
+      </expressionList>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
   def test_compile_subroutine_with_multiple_variable_declaration
     input = StringIO.new("method void foo() { var int bloop; var boolean bleep; }")
     output = StringIO.new

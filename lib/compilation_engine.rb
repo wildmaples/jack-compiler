@@ -199,7 +199,16 @@ class CompilationEngine
 
   def compile_expression_list
     @output.puts("<expressionList>")
-    compile_expression
+
+    unless is_symbol_token_and_equal?(")")
+      compile_expression
+
+      while is_symbol_token_and_equal?(",")
+        output_token # ,
+        compile_expression
+      end
+    end
+
     @output.puts("</expressionList>")
   end
 
