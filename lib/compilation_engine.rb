@@ -247,6 +247,12 @@ class CompilationEngine
 
   def compile_subroutine_call
     output_token # subroutineName
+
+    if is_symbol_token_and_equal?(".")
+      output_token # .
+      output_token # subroutineName
+    end
+
     output_token # (
     compile_expression_list
     output_token # )
