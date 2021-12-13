@@ -128,7 +128,7 @@ class CompilationEngine
     output_token # =
 
     compile_expression # expression
-    
+
     output_token # ;
     @output.puts("</letStatement>")
   end
