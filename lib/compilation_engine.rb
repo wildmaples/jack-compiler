@@ -161,11 +161,7 @@ class CompilationEngine
     output_token # )
 
     output_token # {
-
-    until is_symbol_token_and_equal?("}")
-      compile_statements
-    end
-
+    compile_statements
     output_token # }
     @output.puts("</whileStatement>")
   end
@@ -179,17 +175,13 @@ class CompilationEngine
     output_token # )
 
     output_token # {
-    until is_symbol_token_and_equal?("}")
-      compile_statements
-    end
+    compile_statements
     output_token # }
 
     if is_keyword_token_and_equal?(:ELSE)
       output_token # else
       output_token # {
-      until is_symbol_token_and_equal?("}")
-        compile_statements
-      end
+      compile_statements
       output_token # }
     end
 

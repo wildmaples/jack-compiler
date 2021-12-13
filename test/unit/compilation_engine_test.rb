@@ -458,6 +458,8 @@ class CompilationEngineTest < Minitest::Test
       </expression>
       <symbol> ) </symbol>
       <symbol> { </symbol>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       </whileStatement>
       <ifStatement>
@@ -470,9 +472,13 @@ class CompilationEngineTest < Minitest::Test
       </expression>
       <symbol> ) </symbol>
       <symbol> { </symbol>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       <keyword> else </keyword>
       <symbol> { </symbol>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       </ifStatement>
       <letStatement>
@@ -612,6 +618,8 @@ class CompilationEngineTest < Minitest::Test
       </expression>
       <symbol> ) </symbol>
       <symbol> { </symbol>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       </whileStatement>
     HEREDOC
@@ -730,9 +738,13 @@ class CompilationEngineTest < Minitest::Test
       </expression>
       <symbol> ) </symbol>
       <symbol> { </symbol>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       <keyword> else </keyword>
       <symbol> { </symbol>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       </ifStatement>
     HEREDOC
@@ -761,6 +773,8 @@ class CompilationEngineTest < Minitest::Test
       </expression>
       <symbol> ) </symbol>
       <symbol> { </symbol>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       <keyword> else </keyword>
       <symbol> { </symbol>
