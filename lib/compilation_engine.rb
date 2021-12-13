@@ -1,4 +1,5 @@
 require 'cgi'
+require_relative 'jack_tokenizer'
 
 class CompilationEngine
   def initialize(input, output, tokenizer: JackTokenizer.new(input))
@@ -16,11 +17,13 @@ class CompilationEngine
     output_token # className
     output_token # {
 
-    case @tokenizer.key_word
-    when :STATIC, :FIELD
-      compile_class_var_dec
-    when :CONSTRUCTOR, :FUNCTION, :METHOD, :VOID
-      compile_subroutine
+    until is_symbol_token_and_equal?("}")
+      case @tokenizer.key_word
+      when :STATIC, :FIELD
+        compile_class_var_dec
+      when :CONSTRUCTOR, :FUNCTION, :METHOD, :VOID
+        compile_subroutine
+      end
     end
 
     output_token # }

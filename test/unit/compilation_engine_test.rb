@@ -62,6 +62,43 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
+  def test_compile_class_compiles_class_var_dec_and_subroutines
+    input = StringIO.new("class Foo { field int bloop; method void foo() { } }")
+    output = StringIO.new
+    compilation_engine = CompilationEngine.new(input, output)
+    compilation_engine.compile_class
+
+    expected = <<~HEREDOC
+      <class>
+      <keyword> class </keyword>
+      <identifier> Foo </identifier>
+      <symbol> { </symbol>
+      <classVarDec>
+      <keyword> field </keyword>
+      <keyword> int </keyword>
+      <identifier> bloop </identifier>
+      <symbol> ; </symbol>
+      </classVarDec>
+      <subroutineDec>
+      <keyword> method </keyword>
+      <keyword> void </keyword>
+      <identifier> foo </identifier>
+      <symbol> ( </symbol>
+      <parameterList>
+      </parameterList>
+      <symbol> ) </symbol>
+      <subroutineBody>
+      <symbol> { </symbol>
+      <symbol> } </symbol>
+      </subroutineBody>
+      </subroutineDec>
+      <symbol> } </symbol>
+      </class>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
   def test_compile_class_var_dec_for_field_variables
     input = StringIO.new("field int bloop;")
     output = StringIO.new
