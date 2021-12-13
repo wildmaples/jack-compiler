@@ -319,4 +319,24 @@ class CompilationEngineTest < Minitest::Test
 
     assert_equal(expected, output.string)
   end
+
+  def test_compile_return_returns_void
+    input = StringIO.new("return;")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_return
+
+    expected = <<~HEREDOC
+      <returnStatement>
+      <keyword> return </keyword>
+      <symbol> ; </symbol>
+      </returnStatement>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
 end

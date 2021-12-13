@@ -83,6 +83,15 @@ class CompilationEngine
     @output.puts("</varDec>")
   end
 
+  def compile_return
+    @output.puts("<returnStatement>")
+
+    output_token
+    advance_and_output_token
+
+    @output.puts("</returnStatement>")
+  end
+
   private
 
   def compile_subroutine_body
