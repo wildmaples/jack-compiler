@@ -203,7 +203,7 @@ class CompilationEngine
 
     output_token # {
 
-    while @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == :VAR
+    while is_keyword_token_and_equal?(:VAR)
       compile_var_dec
     end
 
