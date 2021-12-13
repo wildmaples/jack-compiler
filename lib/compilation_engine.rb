@@ -178,6 +178,9 @@ class CompilationEngine
     if is_keyword_token_and_equal?(:ELSE)
       output_token # else
       output_token # {
+      until is_symbol_token_and_equal?("}")
+        compile_statements
+      end
       output_token # }
     end
 
