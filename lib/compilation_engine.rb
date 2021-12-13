@@ -77,7 +77,7 @@ class CompilationEngine
     @output.puts("<varDec>")
     output_token # var
     output_token # type
-    output_token #varName
+    output_token # varName
 
     while @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ","
       output_token # ,
