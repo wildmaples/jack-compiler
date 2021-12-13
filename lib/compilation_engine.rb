@@ -13,13 +13,8 @@ class CompilationEngine
     advance
 
     output_token # class
-    advance
-
     output_token # className
-    advance
-
     output_token # {
-    advance
 
     case @tokenizer.key_word
     when :STATIC, :FIELD
@@ -37,16 +32,9 @@ class CompilationEngine
     @output.puts("<classVarDec>")
 
     output_token # static / field
-    advance
-
     output_token # type
-    advance
-
     output_token # varName
-    advance
-
     output_token # semicolon
-    advance
 
     @output.puts("</classVarDec>")
   end
@@ -55,21 +43,13 @@ class CompilationEngine
     @output.puts("<subroutineDec>")
 
     output_token # constructor / function / method
-    advance
-
     output_token # void / type
-    advance
-
     output_token # subroutineName
-    advance
-
     output_token # (
-    advance
 
     compile_parameter_list
 
     output_token # )
-    advance
 
     compile_subroutine_body
 
@@ -81,20 +61,12 @@ class CompilationEngine
 
     unless @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ")"
       output_token # type
-      advance
-
       output_token # varName
-      advance
 
       while @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ","
         output_token # ,
-        advance
-
         output_token # type
-        advance
-
         output_token # varName
-        advance
       end
     end
 
@@ -104,25 +76,16 @@ class CompilationEngine
   def compile_var_dec
     @output.puts("<varDec>")
     output_token # var
-    advance
-
     output_token # type
-    advance
-
     output_token #varName
-    advance
 
     # TODO: only enter loop when the token is a comma
     until @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ";"
       output_token # ,
-      advance
-
       output_token # varName
-      advance
     end
 
     output_token # ;
-    advance
 
     @output.puts("</varDec>")
   end
@@ -143,10 +106,8 @@ class CompilationEngine
     @output.puts("<returnStatement>")
 
     output_token # return
-    advance
 
     output_token # ;
-    advance
 
     @output.puts("</returnStatement>")
   end
@@ -157,7 +118,6 @@ class CompilationEngine
     @output.puts("<subroutineBody>")
 
     output_token # {
-    advance
 
     while @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == :VAR
       compile_var_dec
@@ -168,7 +128,6 @@ class CompilationEngine
     end
 
     output_token # }
-    advance
 
     @output.puts("</subroutineBody>")
   end
@@ -197,5 +156,6 @@ class CompilationEngine
     end
 
     @output.puts("<#{token_type}> #{CGI.escapeHTML(token)} </#{token_type}>")
+    advance
   end
 end
