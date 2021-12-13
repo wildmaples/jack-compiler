@@ -108,6 +108,8 @@ class CompilationEngine
         compile_while
       when :IF
         compile_if
+      when :DO
+        compile_do
       end
     end
 

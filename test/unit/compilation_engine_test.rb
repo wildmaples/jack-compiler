@@ -392,11 +392,12 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
-  def test_compile_statements_with_let_return_while_and_if
+  def test_compile_statements_with_let_return_while_if_and_do
     statements = <<~HEREDOC
       while (true) { }
       if (false) { } else { }
       let bloop = bloop;
+      do bloop();
       return;
     HEREDOC
     input = StringIO.new(statements)
@@ -448,6 +449,15 @@ class CompilationEngineTest < Minitest::Test
       </expression>
       <symbol> ; </symbol>
       </letStatement>
+      <doStatement>
+      <keyword> do </keyword>
+      <identifier> bloop </identifier>
+      <symbol> ( </symbol>
+      <expressionList>
+      </expressionList>
+      <symbol> ) </symbol>
+      <symbol> ; </symbol>
+      </doStatement>
       <returnStatement>
       <keyword> return </keyword>
       <symbol> ; </symbol>
