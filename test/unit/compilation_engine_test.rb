@@ -150,6 +150,32 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
+  def test_compile_class_var_dec_for_multiple_variables
+    input = StringIO.new("static boolean bleep, bloop, bluup;")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_class_var_dec
+
+    expected = <<~HEREDOC
+      <classVarDec>
+      <keyword> static </keyword>
+      <keyword> boolean </keyword>
+      <identifier> bleep </identifier>
+      <symbol> , </symbol>
+      <identifier> bloop </identifier>
+      <symbol> , </symbol>
+      <identifier> bluup </identifier>
+      <symbol> ; </symbol>
+      </classVarDec>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
   def test_compile_subroutine_empty_method
     input = StringIO.new("method void foo() { }")
     output = StringIO.new

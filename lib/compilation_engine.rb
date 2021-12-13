@@ -34,7 +34,13 @@ class CompilationEngine
     output_token # static / field
     output_token # type
     output_token # varName
-    output_token # semicolon
+
+    while @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ","
+      output_token # ,
+      output_token # varName
+    end
+
+    output_token # ;
 
     @output.puts("</classVarDec>")
   end
