@@ -79,8 +79,7 @@ class CompilationEngine
     output_token # type
     output_token #varName
 
-    # TODO: only enter loop when the token is a comma
-    until @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ";"
+    while @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == ","
       output_token # ,
       output_token # varName
     end
