@@ -170,12 +170,17 @@ class CompilationEngine
     output_token # )
 
     output_token # {
-
     until is_symbol_token_and_equal?("}")
       compile_statements
     end
-    
     output_token # }
+
+    if is_keyword_token_and_equal?(:ELSE)
+      output_token # else
+      output_token # {
+      output_token # }
+    end
+
     @output.puts("</ifStatement>")
   end
 
@@ -240,5 +245,9 @@ class CompilationEngine
 
   def is_symbol_token_and_equal?(symbol)
     @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == symbol
+  end
+
+  def is_keyword_token_and_equal?(keyword)
+    @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == keyword
   end
 end
