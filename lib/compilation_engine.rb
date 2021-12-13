@@ -83,11 +83,24 @@ class CompilationEngine
     @output.puts("</varDec>")
   end
 
+  def compile_statements
+    @output.puts("<statements>")
+
+    until !@tokenizer.has_more_tokens? || (@tokenizer.token_type == :SYMBOL && @tokenizer.symbol == "}")
+      if tokenizer.token_type == :KEYWORD && tokenizer.key_word == :RETURN
+        compile_return
+      end
+    end
+
+    @output.puts("</statements>")
+  end
+
   def compile_return
     @output.puts("<returnStatement>")
 
     output_token
     advance_and_output_token
+    advance
 
     @output.puts("</returnStatement>")
   end
