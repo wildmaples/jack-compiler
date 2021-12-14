@@ -1053,6 +1053,28 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
+  def test_compile_term_unary_op
+    input = StringIO.new("-1")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_term
+
+    expected = <<~HEREDOC
+      <term>
+      <symbol> - </symbol>
+      <term>
+      <integerConstant> 1 </integerConstant>
+      </term>
+      </term>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
   def test_compile_expression_of_single_term
     input = StringIO.new("foo")
     output = StringIO.new

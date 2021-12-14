@@ -226,7 +226,14 @@ class CompilationEngine
 
   def compile_term
     @output.puts("<term>")
-    output_token # int / str / keyword / identifier / subroutine call / expression / unary op
+
+    if symbol_token?(*["-", "~"])
+      output_token # unary op
+      compile_term
+    else
+      output_token # int / str / keyword / identifier / subroutine call / expression / unary op
+    end
+
     @output.puts("</term>")
   end
 
