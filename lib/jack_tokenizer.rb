@@ -7,7 +7,7 @@ class JackTokenizer
   KEYWORD_TOKENS = %w[class method function constructor int boolean char void var static field let do if else while return true false null this]
 
   def has_more_tokens?
-    if (match = @input.match(%r{([ \n\r\t]+|//.*$|/\*(.|\n)*\*/)+}, @index)) && match.begin(0) == @index
+    if (match = @input.match(%r{([ \n\r\t]+|//.*$|/\*(.|\n)*?\*/)+}, @index)) && match.begin(0) == @index
       @index = match.end(0)
     end
 
