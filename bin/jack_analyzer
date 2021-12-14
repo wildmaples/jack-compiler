@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/compilation_engine'
+
+input_file = File.open(ARGV[0])
+compilation_engine = CompilationEngine.new(input_file, STDOUT)
+compilation_engine.compile_class
