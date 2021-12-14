@@ -1053,7 +1053,7 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
-  def test_compile_expression_of_single_expression
+  def test_compile_expression_of_single_term
     input = StringIO.new("foo")
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
@@ -1067,6 +1067,31 @@ class CompilationEngineTest < Minitest::Test
       <expression>
       <term>
       <identifier> foo </identifier>
+      </term>
+      </expression>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
+  def test_compile_expression_of_terms_with_operation
+    input = StringIO.new("1 + 1")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_expression
+
+    expected = <<~HEREDOC
+      <expression>
+      <term>
+      <integerConstant> 1 </integerConstant>
+      </term>
+      <symbol> + </symbol>
+      <term>
+      <integerConstant> 1 </integerConstant>
       </term>
       </expression>
     HEREDOC

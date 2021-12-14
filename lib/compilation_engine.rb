@@ -188,9 +188,17 @@ class CompilationEngine
     @output.puts("</ifStatement>")
   end
 
+  OP_SYMBOLS = %w[+ - * / & | < > =]
+
   def compile_expression
     @output.puts("<expression>")
     compile_term
+
+    if symbol_token?(*OP_SYMBOLS)
+      output_token # op symbol
+      compile_term
+    end
+
     @output.puts("</expression>")
   end
 
