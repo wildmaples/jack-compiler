@@ -237,13 +237,21 @@ class CompilationEngine
       output_token # )
 
     else
-      output_token # int / str / keyword / identifier
+      output_token # int / str / keyword / identifier / start of a subroutine call
 
       if symbol_token?("[")
         output_token # [
         compile_expression
         output_token # ]
+
       elsif symbol_token?("(")
+        output_token # (
+        compile_expression_list
+        output_token # )
+
+      elsif symbol_token?(".")
+        output_token # .
+        output_token # subroutineName
         output_token # (
         compile_expression_list
         output_token # )
