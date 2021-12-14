@@ -1149,7 +1149,7 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
-  def test_compile_term_subroutine_call
+  def test_compile_term_subroutine_call_by_class_or_var
     input = StringIO.new("bloop.send()")
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
