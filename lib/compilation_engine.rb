@@ -227,7 +227,7 @@ class CompilationEngine
   def compile_term
     @output.puts("<term>")
 
-    if symbol_token?(*["-", "~"])
+    if symbol_token?("-", "~")
       output_token # unary op
       compile_term
 
