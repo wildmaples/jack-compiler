@@ -243,6 +243,10 @@ class CompilationEngine
         output_token # [
         compile_expression
         output_token # ]
+      elsif symbol_token?("(")
+        output_token # (
+        compile_expression_list
+        output_token # )
       end
     end
 
