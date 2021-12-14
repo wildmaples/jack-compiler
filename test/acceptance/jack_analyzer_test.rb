@@ -4,7 +4,7 @@ require "tempfile"
 class JackAnalyzerAcceptanceTest < Minitest::Test
   TEXT_COMPARER_PATH = ENV["TEXT_COMPARER"]
 
-  Dir.glob("ExpressionLessSquare/*.jack", base: "examples").each do |file_name|
+  Dir.glob("*/*.jack", base: "examples").each do |file_name|
     base_name = File.join(File.dirname(file_name), File.basename(file_name, ".*"))
     expected_xml_path = File.join("test/expected", "#{base_name}.xml")
     test_name = "test_acceptance_#{base_name}"
