@@ -101,7 +101,7 @@ class CompilationEngine
   def compile_statements
     @output.puts("<statements>")
 
-    until !@tokenizer.has_more_tokens? || is_symbol_token_and_equal?("}")
+    while @tokenizer.token_type == :KEYWORD
       case @tokenizer.key_word
       when :RETURN
         compile_return
