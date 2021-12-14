@@ -232,6 +232,12 @@ class CompilationEngine
       compile_term
     else
       output_token # int / str / keyword / identifier / subroutine call / expression
+
+      if symbol_token?("[")
+        output_token # [
+        compile_expression
+        output_token # ]
+      end
     end
 
     @output.puts("</term>")
