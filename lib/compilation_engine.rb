@@ -231,7 +231,7 @@ class CompilationEngine
       output_token # unary op
       compile_term
     else
-      output_token # int / str / keyword / identifier / subroutine call / expression / unary op
+      output_token # int / str / keyword / identifier / subroutine call / expression
     end
 
     @output.puts("</term>")
