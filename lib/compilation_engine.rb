@@ -233,9 +233,7 @@ class CompilationEngine
       compile_var_dec
     end
 
-    if tokenizer.token_type == :KEYWORD
-      compile_statements
-    end
+    compile_statements
 
     output_token # }
 

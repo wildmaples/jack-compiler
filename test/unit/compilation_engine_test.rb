@@ -89,6 +89,8 @@ class CompilationEngineTest < Minitest::Test
       <symbol> ) </symbol>
       <subroutineBody>
       <symbol> { </symbol>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       </subroutineBody>
       </subroutineDec>
@@ -234,6 +236,8 @@ class CompilationEngineTest < Minitest::Test
       <symbol> ) </symbol>
       <subroutineBody>
       <symbol> { </symbol>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       </subroutineBody>
       </subroutineDec>
@@ -265,6 +269,8 @@ class CompilationEngineTest < Minitest::Test
       <symbol> ) </symbol>
       <subroutineBody>
       <symbol> { </symbol>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       </subroutineBody>
       </subroutineDec>
@@ -375,6 +381,8 @@ class CompilationEngineTest < Minitest::Test
       <identifier> bloop </identifier>
       <symbol> ; </symbol>
       </varDec>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       </subroutineBody>
       </subroutineDec>
@@ -1016,6 +1024,8 @@ class CompilationEngineTest < Minitest::Test
       <identifier> bleep </identifier>
       <symbol> ; </symbol>
       </varDec>
+      <statements>
+      </statements>
       <symbol> } </symbol>
       </subroutineBody>
       </subroutineDec>
