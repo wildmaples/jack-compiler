@@ -281,8 +281,8 @@ class CompilationEngine
     advance
   end
 
-  def symbol_token?(symbol)
-    @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == symbol
+  def symbol_token?(*symbols)
+    @tokenizer.token_type == :SYMBOL && symbols.include?(@tokenizer.symbol)
   end
 
   def keyword_token?(keyword = nil)
