@@ -230,8 +230,14 @@ class CompilationEngine
     if symbol_token?(*["-", "~"])
       output_token # unary op
       compile_term
+
+    elsif symbol_token?("(")
+      output_token # (
+      compile_expression
+      output_token # )
+
     else
-      output_token # int / str / keyword / identifier / subroutine call / expression
+      output_token # int / str / keyword / identifier
 
       if symbol_token?("[")
         output_token # [
