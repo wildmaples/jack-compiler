@@ -101,7 +101,7 @@ class CompilationEngine
   def compile_statements
     @output.puts("<statements>")
 
-    while @tokenizer.token_type == :KEYWORD
+    while keyword_token?
       case @tokenizer.key_word
       when :RETURN
         compile_return
@@ -285,7 +285,11 @@ class CompilationEngine
     @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == symbol
   end
 
-  def keyword_token?(keyword)
-    @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == keyword
+  def keyword_token?(keyword = nil)
+    if keyword.nil?
+      @tokenizer.token_type == :KEYWORD
+    else
+      @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == keyword
+    end
   end
 end
