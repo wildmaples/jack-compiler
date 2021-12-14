@@ -17,7 +17,7 @@ class CompilationEngine
     output_token # className
     output_token # {
 
-    until is_symbol_token_and_equal?("}")
+    until symbol_token?("}")
       case @tokenizer.key_word
       when :STATIC, :FIELD
         compile_class_var_dec
@@ -38,7 +38,7 @@ class CompilationEngine
     output_token # type
     output_token # varName
 
-    while is_symbol_token_and_equal?(",")
+    while symbol_token?(",")
       output_token # ,
       output_token # varName
     end
@@ -68,11 +68,11 @@ class CompilationEngine
   def compile_parameter_list
     @output.puts("<parameterList>")
 
-    unless is_symbol_token_and_equal?(")")
+    unless symbol_token?(")")
       output_token # type
       output_token # varName
 
-      while is_symbol_token_and_equal?(",")
+      while symbol_token?(",")
         output_token # ,
         output_token # type
         output_token # varName
@@ -88,7 +88,7 @@ class CompilationEngine
     output_token # type
     output_token # varName
 
-    while is_symbol_token_and_equal?(",")
+    while symbol_token?(",")
       output_token # ,
       output_token # varName
     end
@@ -124,7 +124,7 @@ class CompilationEngine
 
     output_token # return
 
-    unless is_symbol_token_and_equal?(";")
+    unless symbol_token?(";")
       compile_expression
     end
 
@@ -138,7 +138,7 @@ class CompilationEngine
     output_token # let
     output_token # varName
 
-    if is_symbol_token_and_equal?("[")
+    if symbol_token?("[")
       output_token # [
       compile_expression
       output_token # ]
@@ -178,7 +178,7 @@ class CompilationEngine
     compile_statements
     output_token # }
 
-    if is_keyword_token_and_equal?(:ELSE)
+    if keyword_token?(:ELSE)
       output_token # else
       output_token # {
       compile_statements
@@ -197,10 +197,10 @@ class CompilationEngine
   def compile_expression_list
     @output.puts("<expressionList>")
 
-    unless is_symbol_token_and_equal?(")")
+    unless symbol_token?(")")
       compile_expression
 
-      while is_symbol_token_and_equal?(",")
+      while symbol_token?(",")
         output_token # ,
         compile_expression
       end
@@ -229,7 +229,7 @@ class CompilationEngine
 
     output_token # {
 
-    while is_keyword_token_and_equal?(:VAR)
+    while keyword_token?(:VAR)
       compile_var_dec
     end
 
@@ -243,7 +243,7 @@ class CompilationEngine
   def compile_subroutine_call
     output_token # subroutineName
 
-    if is_symbol_token_and_equal?(".")
+    if symbol_token?(".")
       output_token # .
       output_token # subroutineName
     end
@@ -281,11 +281,11 @@ class CompilationEngine
     advance
   end
 
-  def is_symbol_token_and_equal?(symbol)
+  def symbol_token?(symbol)
     @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == symbol
   end
 
-  def is_keyword_token_and_equal?(keyword)
+  def keyword_token?(keyword)
     @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == keyword
   end
 end
