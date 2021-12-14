@@ -194,7 +194,7 @@ class CompilationEngine
     @output.puts("<expression>")
     compile_term
 
-    if symbol_token?(*OP_SYMBOLS)
+    while symbol_token?(*OP_SYMBOLS)
       output_token # op symbol
       compile_term
     end

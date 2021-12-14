@@ -1098,4 +1098,33 @@ class CompilationEngineTest < Minitest::Test
 
     assert_equal(expected, output.string)
   end
+
+  def test_compile_expression_of_terms_with_multiple_operations
+    input = StringIO.new("1 + 2 - 3")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_expression
+
+    expected = <<~HEREDOC
+      <expression>
+      <term>
+      <integerConstant> 1 </integerConstant>
+      </term>
+      <symbol> + </symbol>
+      <term>
+      <integerConstant> 2 </integerConstant>
+      </term>
+      <symbol> - </symbol>
+      <term>
+      <integerConstant> 3 </integerConstant>
+      </term>
+      </expression>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
 end
