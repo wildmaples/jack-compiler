@@ -29,6 +29,10 @@ class SymbolTable
     symbol_table.values.count { |entry| entry[:kind] == kind }
   end
 
+  def start_subroutine
+    @subroutine_symbol_table = {}
+  end
+
   private
 
   def symbol_table

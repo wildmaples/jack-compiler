@@ -48,4 +48,20 @@ class SymbolTableTest < Minitest::Test
     assert_equal(2, symbol_table.var_count(:STATIC))
     assert_equal(1, symbol_table.var_count(:FIELD))
   end
+
+  def test_start_subroutine_resets_subroutine_scoped_identifiers
+    symbol_table = SymbolTable.new
+    symbol_table.define("too", "boolean", :ARG)
+    symbol_table.define("foo", "int", :STATIC)
+    symbol_table.define("bar", "boolean", :STATIC)
+    symbol_table.define("tar", "int", :ARG)
+
+    assert_equal(2, symbol_table.var_count(:ARG))
+    assert_equal(2, symbol_table.var_count(:STATIC))
+
+    symbol_table.start_subroutine
+    
+    assert_equal(0, symbol_table.var_count(:ARG))
+    assert_equal(2, symbol_table.var_count(:STATIC))
+  end
 end
