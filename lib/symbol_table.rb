@@ -20,6 +20,6 @@ class SymbolTable
   end
 
   def var_count(kind)
-    @symbol_table.size
+    @symbol_table.values.count { |entry| entry[:kind] == kind }
   end
 end

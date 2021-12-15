@@ -26,4 +26,14 @@ class SymbolTableTest < Minitest::Test
     symbol_table.define("bar", "boolean", :STATIC)
     assert_equal(2, symbol_table.var_count(:STATIC))
   end
+
+  def test_var_count_returns_number_of_different_kinds_of_identifier
+    symbol_table = SymbolTable.new
+    symbol_table.define("foo", "int", :STATIC)
+    symbol_table.define("bar", "boolean", :FIELD)
+    symbol_table.define("baz", "char", :STATIC)
+
+    assert_equal(2, symbol_table.var_count(:STATIC))
+    assert_equal(1, symbol_table.var_count(:FIELD))
+  end
 end
