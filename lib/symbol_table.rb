@@ -1,12 +1,16 @@
 class SymbolTable
   def initialize
-    @symbol_table = {}
+    @class_symbol_table = {}
+    @subroutine_symbol_table = {}
   end
 
-  attr_reader :symbol_table
-
   def define(name, type, kind)
-    symbol_table[name] = {type: type, kind: kind, index: var_count(kind)}
+    case kind
+    when :STATIC, :FIELD
+      @class_symbol_table[name] = {type: type, kind: kind, index: var_count(kind)}
+    when :ARG, :VAR
+      @subroutine_symbol_table[name] = {type: type, kind: kind, index: var_count(kind)}
+    end
   end
 
   def kind_of(name)
@@ -23,5 +27,11 @@ class SymbolTable
 
   def var_count(kind)
     symbol_table.values.count { |entry| entry[:kind] == kind }
+  end
+
+  private
+
+  def symbol_table
+    @subroutine_symbol_table.merge(@class_symbol_table)
   end
 end
