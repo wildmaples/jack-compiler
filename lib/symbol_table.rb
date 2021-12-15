@@ -4,7 +4,7 @@ class SymbolTable
   end
 
   def define(name, type, kind)
-    @symbol_table[name] = {type: type, kind: kind, index: 0}
+    @symbol_table[name] = {type: type, kind: kind, index: var_count(kind)}
   end
 
   def kind_of(name)

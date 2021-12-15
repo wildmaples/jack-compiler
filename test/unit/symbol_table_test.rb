@@ -14,10 +14,22 @@ class SymbolTableTest < Minitest::Test
     assert_equal("int", symbol_table.type_of("foo"))
   end
 
-  def test_index_of_returns_index
+  def test_index_of_one_returns_index
     symbol_table = SymbolTable.new
     symbol_table.define("foo", "int", :STATIC)
     assert_equal(0, symbol_table.index_of("foo"))
+  end
+
+  def test_index_of_returns_index_with_various_identifiers
+    symbol_table = SymbolTable.new
+    symbol_table.define("foo", "int", :STATIC)
+    symbol_table.define("bar", "boolean", :FIELD)
+    symbol_table.define("baz", "char", :STATIC)
+    symbol_table.define("too", "boolean", :FIELD)
+    symbol_table.define("tar", "int", :STATIC)
+
+    assert_equal(1, symbol_table.index_of("too"))
+    assert_equal(2, symbol_table.index_of("tar"))
   end
 
   def test_var_count_returns_number_of_same_kind_of_identifier
