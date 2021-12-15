@@ -1,12 +1,12 @@
 require "test_helper"
 require "tempfile"
 
-class JackAnalyzerAcceptanceTest < Minitest::Test
+class TokenizerAcceptanceTest < Minitest::Test
   TEXT_COMPARER_PATH = ENV["TEXT_COMPARER"]
 
   Dir.glob("*/*.jack", base: "examples").each do |file_name|
     base_name = File.join(File.dirname(file_name), File.basename(file_name, ".*"))
-    expected_xml_path = File.join("test/expected", "#{base_name}.xml")
+    expected_xml_path = File.join("test/expected", "#{base_name}T.xml")
     test_name = "test_acceptance_#{base_name}"
 
     define_method(test_name) do
@@ -14,8 +14,8 @@ class JackAnalyzerAcceptanceTest < Minitest::Test
 
       # make a temporary file
       Tempfile.create do |actual_xml_file|
-        # parse .jack and write the resulting XML into the temporary file
-        actual_xml = `bin/jack_analyzer examples/#{base_name}.jack`
+        # tokenize .jack and write the resulting XML into the temporary file
+        actual_xml = `bin/tokenizer examples/#{base_name}.jack`
         actual_xml_file.write(actual_xml)
         actual_xml_file.close
 

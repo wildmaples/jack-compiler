@@ -1053,7 +1053,128 @@ class CompilationEngineTest < Minitest::Test
     assert_equal(expected, output.string)
   end
 
-  def test_compile_expression_of_single_expression
+  def test_compile_term_unary_op
+    input = StringIO.new("-1")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_term
+
+    expected = <<~HEREDOC
+      <term>
+      <symbol> - </symbol>
+      <term>
+      <integerConstant> 1 </integerConstant>
+      </term>
+      </term>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
+  def test_compile_term_array_index
+    input = StringIO.new("bloop[99]")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_term
+
+    expected = <<~HEREDOC
+      <term>
+      <identifier> bloop </identifier>
+      <symbol> [ </symbol>
+      <expression>
+      <term>
+      <integerConstant> 99 </integerConstant>
+      </term>
+      </expression>
+      <symbol> ] </symbol>
+      </term>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
+  def test_compile_term_expression
+    input = StringIO.new("(0)")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_term
+
+    expected = <<~HEREDOC
+      <term>
+      <symbol> ( </symbol>
+      <expression>
+      <term>
+      <integerConstant> 0 </integerConstant>
+      </term>
+      </expression>
+      <symbol> ) </symbol>
+      </term>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
+  def test_compile_term_subroutine_call
+    input = StringIO.new("bloop()")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_term
+
+    expected = <<~HEREDOC
+      <term>
+      <identifier> bloop </identifier>
+      <symbol> ( </symbol>
+      <expressionList>
+      </expressionList>
+      <symbol> ) </symbol>
+      </term>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
+  def test_compile_term_subroutine_call_by_class_or_var
+    input = StringIO.new("bloop.send()")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_term
+
+    expected = <<~HEREDOC
+      <term>
+      <identifier> bloop </identifier>
+      <symbol> . </symbol>
+      <identifier> send </identifier>
+      <symbol> ( </symbol>
+      <expressionList>
+      </expressionList>
+      <symbol> ) </symbol>
+      </term>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
+  def test_compile_expression_of_single_term
     input = StringIO.new("foo")
     output = StringIO.new
     tokenizer = JackTokenizer.new(input)
@@ -1067,6 +1188,60 @@ class CompilationEngineTest < Minitest::Test
       <expression>
       <term>
       <identifier> foo </identifier>
+      </term>
+      </expression>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
+  def test_compile_expression_of_terms_with_operation
+    input = StringIO.new("1 + 1")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_expression
+
+    expected = <<~HEREDOC
+      <expression>
+      <term>
+      <integerConstant> 1 </integerConstant>
+      </term>
+      <symbol> + </symbol>
+      <term>
+      <integerConstant> 1 </integerConstant>
+      </term>
+      </expression>
+    HEREDOC
+
+    assert_equal(expected, output.string)
+  end
+
+  def test_compile_expression_of_terms_with_multiple_operations
+    input = StringIO.new("1 + 2 - 3")
+    output = StringIO.new
+    tokenizer = JackTokenizer.new(input)
+    compilation_engine = CompilationEngine.new(input, output, tokenizer: tokenizer)
+
+    assert tokenizer.has_more_tokens?
+    tokenizer.advance
+    compilation_engine.compile_expression
+
+    expected = <<~HEREDOC
+      <expression>
+      <term>
+      <integerConstant> 1 </integerConstant>
+      </term>
+      <symbol> + </symbol>
+      <term>
+      <integerConstant> 2 </integerConstant>
+      </term>
+      <symbol> - </symbol>
+      <term>
+      <integerConstant> 3 </integerConstant>
       </term>
       </expression>
     HEREDOC

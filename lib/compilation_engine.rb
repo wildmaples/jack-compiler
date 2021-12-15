@@ -188,9 +188,17 @@ class CompilationEngine
     @output.puts("</ifStatement>")
   end
 
+  OP_SYMBOLS = %w[+ - * / & | < > =]
+
   def compile_expression
     @output.puts("<expression>")
     compile_term
+
+    while symbol_token?(*OP_SYMBOLS)
+      output_token # op symbol
+      compile_term
+    end
+
     @output.puts("</expression>")
   end
 
@@ -218,7 +226,38 @@ class CompilationEngine
 
   def compile_term
     @output.puts("<term>")
-    output_token # int / str / keyword / identifier / subroutine call / expression / unary op
+
+    if symbol_token?("-", "~")
+      output_token # unary op
+      compile_term
+
+    elsif symbol_token?("(")
+      output_token # (
+      compile_expression
+      output_token # )
+
+    else
+      output_token # int / str / keyword / identifier / start of a subroutine call
+
+      if symbol_token?("[")
+        output_token # [
+        compile_expression
+        output_token # ]
+
+      elsif symbol_token?("(")
+        output_token # (
+        compile_expression_list
+        output_token # )
+
+      elsif symbol_token?(".")
+        output_token # .
+        output_token # subroutineName
+        output_token # (
+        compile_expression_list
+        output_token # )
+      end
+    end
+
     @output.puts("</term>")
   end
 
@@ -281,8 +320,8 @@ class CompilationEngine
     advance
   end
 
-  def symbol_token?(symbol)
-    @tokenizer.token_type == :SYMBOL && @tokenizer.symbol == symbol
+  def symbol_token?(*symbols)
+    @tokenizer.token_type == :SYMBOL && symbols.include?(@tokenizer.symbol)
   end
 
   def keyword_token?(keyword = nil)
