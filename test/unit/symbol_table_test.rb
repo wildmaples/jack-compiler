@@ -8,6 +8,11 @@ class SymbolTableTest < Minitest::Test
     assert_equal(:STATIC, symbol_table.kind_of("foo"))
   end
 
+  def test_kind_of_returns_none_if_no_kind_given
+    symbol_table = SymbolTable.new
+    assert_equal(:NONE, symbol_table.kind_of("foo"))
+  end
+
   def test_type_of_returns_the_type_of_identifier
     symbol_table = SymbolTable.new
     symbol_table.define("foo", "int", :STATIC)
@@ -60,7 +65,7 @@ class SymbolTableTest < Minitest::Test
     assert_equal(2, symbol_table.var_count(:STATIC))
 
     symbol_table.start_subroutine
-    
+
     assert_equal(0, symbol_table.var_count(:ARG))
     assert_equal(2, symbol_table.var_count(:STATIC))
   end

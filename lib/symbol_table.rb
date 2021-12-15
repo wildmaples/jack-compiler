@@ -14,7 +14,7 @@ class SymbolTable
   end
 
   def kind_of(name)
-    symbol_table[name][:kind]
+    symbol_table.fetch(name, {kind: :NONE})[:kind]
   end
 
   def type_of(name)
