@@ -13,4 +13,10 @@ class SymbolTableTest < Minitest::Test
     symbol_table.define("foo", "int", :STATIC)
     assert_equal("int", symbol_table.type_of("foo"))
   end
+
+  def test_index_of_returns_index
+    symbol_table = SymbolTable.new
+    symbol_table.define("foo", "int", :STATIC)
+    assert_equal(0, symbol_table.index_of("foo"))
+  end
 end
