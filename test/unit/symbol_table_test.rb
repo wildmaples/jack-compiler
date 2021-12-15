@@ -7,4 +7,10 @@ class SymbolTableTest < Minitest::Test
     symbol_table.define("foo", "int", :STATIC)
     assert_equal(:STATIC, symbol_table.kind_of("foo"))
   end
+
+  def test_type_of_returns_the_type_of_identifier
+    symbol_table = SymbolTable.new
+    symbol_table.define("foo", "int", :STATIC)
+    assert_equal("int", symbol_table.type_of("foo"))
+  end
 end
