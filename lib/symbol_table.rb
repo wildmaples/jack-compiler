@@ -18,4 +18,8 @@ class SymbolTable
   def index_of(name)
     @symbol_table[name][:index]
   end
+
+  def var_count(kind)
+    @symbol_table.size
+  end
 end
