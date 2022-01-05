@@ -65,6 +65,8 @@ class CompilationEngine
   def compile_subroutine
     @output.puts("<subroutineDec>")
 
+    @symbol_table.start_subroutine 
+    
     kind = @tokenizer.key_word
     output_token # constructor / function / method
 
@@ -103,13 +105,27 @@ class CompilationEngine
 
   def compile_var_dec
     @output.puts("<varDec>")
+
+    kind = @tokenizer.key_word
     output_token # var
+
+    type = @tokenizer.key_word
     output_token # type
+
+    name = @tokenizer.identifier
     output_token # varName
+
+    @symbol_table.define(name, type, kind)
+    @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
 
     while symbol_token?(",")
       output_token # ,
+
+      name = @tokenizer.identifier
       output_token # varName
+
+      @symbol_table.define(name, type, kind)
+      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
     end
 
     output_token # ;
