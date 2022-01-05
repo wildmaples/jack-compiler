@@ -316,10 +316,12 @@ class CompilationEngine
 
   def compile_subroutine_call
     output_token # subroutineName
+    @output.puts("(subroutine, nil, false, nil)")
 
     if symbol_token?(".")
       output_token # .
       output_token # subroutineName
+      @output.puts("(subroutine, nil, false, nil)")
     end
 
     output_token # (
