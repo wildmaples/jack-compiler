@@ -15,8 +15,12 @@ class CompilationEngine
     @output.puts("<class>")
     advance
 
+    category = @tokenizer.identifier
     output_token # class
     output_token # className
+
+    @output.puts("(#{category}, defined, false, nil)")
+    
     output_token # {
 
     until symbol_token?("}")
