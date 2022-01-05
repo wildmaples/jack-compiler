@@ -1,10 +1,12 @@
 require 'cgi'
 require_relative 'jack_tokenizer'
+require_relative 'symbol_table'
 
 class CompilationEngine
   def initialize(input, output, tokenizer: JackTokenizer.new(input))
     @output = output
     @tokenizer = tokenizer
+    @symbol_table = SymbolTable.new
   end
 
   attr_reader :tokenizer
@@ -34,9 +36,17 @@ class CompilationEngine
   def compile_class_var_dec
     @output.puts("<classVarDec>")
 
+    kind = @tokenizer.key_word
     output_token # static / field
+
+    type = @tokenizer.key_word
     output_token # type
+
+    name = @tokenizer.identifier
     output_token # varName
+
+    @symbol_table.define(name, type, kind)
+    @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
 
     while symbol_token?(",")
       output_token # ,
