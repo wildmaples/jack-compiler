@@ -65,9 +65,14 @@ class CompilationEngine
   def compile_subroutine
     @output.puts("<subroutineDec>")
 
+    kind = @tokenizer.key_word
     output_token # constructor / function / method
+
+    type = @tokenizer.key_word
     output_token # void / type
     output_token # subroutineName
+
+    @output.puts("(#{kind}, defined, false, nil)")
     output_token # (
 
     compile_parameter_list
