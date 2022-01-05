@@ -15,11 +15,10 @@ class CompilationEngine
     @output.puts("<class>")
     advance
 
-    category = @tokenizer.identifier
     output_token # class
     output_token # className
 
-    @output.puts("(#{category}, defined, false, nil)")
+    @output.puts("(class, defined, false, nil)")
     
     output_token # {
 
@@ -66,7 +65,7 @@ class CompilationEngine
     @output.puts("<subroutineDec>")
 
     @symbol_table.start_subroutine 
-    
+
     kind = @tokenizer.key_word
     output_token # constructor / function / method
 
