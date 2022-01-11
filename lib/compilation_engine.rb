@@ -89,13 +89,27 @@ class CompilationEngine
     @output.puts("<parameterList>")
 
     unless symbol_token?(")")
+      kind = :ARG
+      type = @tokenizer.key_word
       output_token # type
+
+      name = @tokenizer.identifier
       output_token # varName
+
+      @symbol_table.define(name, type, kind)
+      @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")  
 
       while symbol_token?(",")
         output_token # ,
+
+        type = @tokenizer.key_word
         output_token # type
+
+        name = @tokenizer.identifier
         output_token # varName
+
+        @symbol_table.define(name, type, kind)
+        @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")  
       end
     end
 
@@ -277,7 +291,6 @@ class CompilationEngine
       if @tokenizer.token_type == :IDENTIFIER
         @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")
       end
-      
       if symbol_token?("[")
         output_token # [
         compile_expression
