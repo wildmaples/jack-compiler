@@ -26,4 +26,9 @@ class VMWriterTest < Minitest::Test
     @vm_writer.write_call("foo", 3)
     assert_equal("call foo 3", @output.string)
   end
+
+  def test_write_arithmetic_add
+    @vm_writer.write_arithmetic(:ADD)
+    assert_equal("add", @output.string)
+  end
 end

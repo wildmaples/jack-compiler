@@ -25,4 +25,8 @@ class VMWriter
   def write_call(name, num_args)
     @output.print "call #{name} #{num_args.to_s}"
   end
+
+  def write_arithmetic(command)
+    @output.print "add"
+  end
 end
