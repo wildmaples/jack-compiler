@@ -21,4 +21,9 @@ class VMWriterTest < Minitest::Test
     @vm_writer.write_push(:POINTER, 10)
     assert_equal("push pointer 10", @output.string)
   end
+
+  def test_write_call
+    @vm_writer.write_call("foo", 3)
+    assert_equal("call foo 3", @output.string)
+  end
 end
