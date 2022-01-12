@@ -31,4 +31,9 @@ class VMWriterTest < Minitest::Test
     @vm_writer.write_arithmetic(:ADD)
     assert_equal("add", @output.string)
   end
+
+  def test_write_pop_arguments
+    @vm_writer.write_pop(:ARG, 10)
+    assert_equal("pop argument 10", @output.string)
+  end
 end

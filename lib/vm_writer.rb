@@ -22,6 +22,10 @@ class VMWriter
     @output.print "push #{SEGMENT_TO_VM_SYNTAX_MAP[segment]} #{index.to_s}"
   end
 
+  def write_pop(segment, index)
+    @output.print "pop #{SEGMENT_TO_VM_SYNTAX_MAP[segment]} #{index.to_s}"
+  end
+
   def write_call(name, num_args)
     @output.print "call #{name} #{num_args.to_s}"
   end
