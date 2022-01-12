@@ -97,7 +97,7 @@ class CompilationEngine
       output_token # varName
 
       @symbol_table.define(name, type, kind)
-      @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")  
+      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")  
 
       while symbol_token?(",")
         output_token # ,
@@ -109,7 +109,7 @@ class CompilationEngine
         output_token # varName
 
         @symbol_table.define(name, type, kind)
-        @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")  
+        @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")  
       end
     end
 
