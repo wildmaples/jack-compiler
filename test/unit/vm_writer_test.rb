@@ -11,4 +11,14 @@ class VMWriterTest < Minitest::Test
     @vm_writer.write_function("Main.foo", 3)
     assert_equal("function Main.foo 3", @output.string)
   end
+
+  def test_write_push_constant
+    @vm_writer.write_push(:CONST, 3)
+    assert_equal("push constant 3", @output.string)
+  end
+
+  def test_write_push_pointer
+    @vm_writer.write_push(:POINTER, 10)
+    assert_equal("push pointer 10", @output.string)
+  end
 end
