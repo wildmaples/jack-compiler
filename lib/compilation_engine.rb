@@ -286,11 +286,11 @@ class CompilationEngine
 
     else
       name = @tokenizer.identifier
-      output_token # int / str / keyword / identifier / start of a subroutine call
-      
       if @tokenizer.token_type == :IDENTIFIER
         @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")
       end
+
+      output_token # int / str / keyword / identifier / start of a subroutine call
       if symbol_token?("[")
         output_token # [
         compile_expression
