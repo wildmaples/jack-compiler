@@ -53,7 +53,12 @@ class CompilationEngine
 
     while symbol_token?(",")
       output_token # ,
+
+      name = @tokenizer.identifier
       output_token # varName
+
+      @symbol_table.define(name, type, kind)
+      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")  
     end
 
     output_token # ;
