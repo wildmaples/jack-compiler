@@ -15,12 +15,10 @@ class CompilationEngine
 
   def compile_class
     advance
-
     output_token # class
 
     @class_name = @tokenizer.identifier
     output_token # className
-
 
     output_token # {
 
@@ -74,9 +72,7 @@ class CompilationEngine
     output_token # subroutineName
 
     output_token # (
-
     compile_parameter_list
-
     output_token # )
 
     full_subroutine_name = "#{@class_name}.#{name}"
