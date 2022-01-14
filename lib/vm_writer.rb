@@ -33,4 +33,8 @@ class VMWriter
   def write_arithmetic(command)
     @output.puts "add"
   end
+
+  def write_return
+    @output.print "return"
+  end
 end

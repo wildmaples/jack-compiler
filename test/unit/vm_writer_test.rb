@@ -36,4 +36,9 @@ class VMWriterTest < Minitest::Test
     @vm_writer.write_pop(:ARG, 10)
     assert_equal("pop argument 10\n", @output.string)
   end
+
+  def test_write_return
+    @vm_writer.write_return
+    assert_equal("return", @output.string)
+  end
 end
