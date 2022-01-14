@@ -257,8 +257,16 @@ class CompilationEngine
     compile_term
 
     while symbol_token?(*OP_SYMBOLS)
+      operator_symbol = @tokenizer.symbol
       output_token # op symbol
       compile_term
+    end
+
+    case operator_symbol
+    when "*"
+      @vm_writer.write_call("Math.multiply", 2)
+    when "+"
+      @vm_writer.write_arithmetic(:ADD)
     end
 
     @output.puts("</expression>")
@@ -373,6 +381,7 @@ class CompilationEngine
     when :INT_CONST
       token = tokenizer.int_val.to_s
       token_type = "integerConstant"
+      @vm_writer.write_push(:CONST, tokenizer.int_val)
     when :KEYWORD
       token = tokenizer.key_word.downcase.to_s
       token_type = "keyword"
