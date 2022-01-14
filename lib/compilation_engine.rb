@@ -14,7 +14,6 @@ class CompilationEngine
   attr_reader :tokenizer
 
   def compile_class
-    @output.puts("<class>")
     advance
 
     output_token # class
@@ -22,7 +21,6 @@ class CompilationEngine
     @class_name = @tokenizer.identifier
     output_token # className
 
-    @output.puts("(class, defined, false, nil)")
 
     output_token # {
 
@@ -36,13 +34,9 @@ class CompilationEngine
     end
 
     output_token # }
-
-    @output.puts("</class>")
   end
 
   def compile_class_var_dec
-    @output.puts("<classVarDec>")
-
     kind = @tokenizer.key_word
     output_token # static / field
 
@@ -53,7 +47,6 @@ class CompilationEngine
     output_token # varName
 
     @symbol_table.define(name, type, kind)
-    @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
 
     while symbol_token?(",")
       output_token # ,
@@ -66,13 +59,9 @@ class CompilationEngine
     end
 
     output_token # ;
-
-    @output.puts("</classVarDec>")
   end
 
   def compile_subroutine
-    @output.puts("<subroutineDec>")
-
     @symbol_table.start_subroutine
 
     kind = @tokenizer.key_word
@@ -84,7 +73,6 @@ class CompilationEngine
     name = @tokenizer.identifier
     output_token # subroutineName
 
-    @output.puts("(#{kind}, defined, false, nil)")
     output_token # (
 
     compile_parameter_list
@@ -95,12 +83,9 @@ class CompilationEngine
     @vm_writer.write_function(full_subroutine_name, @symbol_table.var_count(name))
 
     compile_subroutine_body
-
-    @output.puts("</subroutineDec>")
   end
 
   def compile_parameter_list
-    @output.puts("<parameterList>")
 
     unless symbol_token?(")")
       kind = :ARG
@@ -111,7 +96,6 @@ class CompilationEngine
       output_token # varName
 
       @symbol_table.define(name, type, kind)
-      @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")
 
       while symbol_token?(",")
         output_token # ,
@@ -123,16 +107,11 @@ class CompilationEngine
         output_token # varName
 
         @symbol_table.define(name, type, kind)
-        @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")
       end
     end
-
-    @output.puts("</parameterList>")
   end
 
   def compile_var_dec
-    @output.puts("<varDec>")
-
     kind = @tokenizer.key_word
     output_token # var
 
@@ -143,7 +122,6 @@ class CompilationEngine
     output_token # varName
 
     @symbol_table.define(name, type, kind)
-    @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
 
     while symbol_token?(",")
       output_token # ,
@@ -152,17 +130,12 @@ class CompilationEngine
       output_token # varName
 
       @symbol_table.define(name, type, kind)
-      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
     end
 
     output_token # ;
-
-    @output.puts("</varDec>")
   end
 
   def compile_statements
-    @output.puts("<statements>")
-
     while keyword_token?
       case @tokenizer.key_word
       when :RETURN
@@ -177,13 +150,9 @@ class CompilationEngine
         compile_do
       end
     end
-
-    @output.puts("</statements>")
   end
 
   def compile_return
-    @output.puts("<returnStatement>")
-
     output_token # return
 
     unless symbol_token?(";")
@@ -191,12 +160,9 @@ class CompilationEngine
     end
 
     output_token # ;
-
-    @output.puts("</returnStatement>")
   end
 
   def compile_let
-    @output.puts("<letStatement>")
     output_token # let
     output_token # varName
 
@@ -211,11 +177,9 @@ class CompilationEngine
     compile_expression # expression
 
     output_token # ;
-    @output.puts("</letStatement>")
   end
 
   def compile_while
-    @output.puts("<whileStatement>")
     output_token # while
 
     output_token # (
@@ -225,11 +189,9 @@ class CompilationEngine
     output_token # {
     compile_statements
     output_token # }
-    @output.puts("</whileStatement>")
   end
 
   def compile_if
-    @output.puts("<ifStatement>")
     output_token # if
 
     output_token # (
@@ -246,14 +208,11 @@ class CompilationEngine
       compile_statements
       output_token # }
     end
-
-    @output.puts("</ifStatement>")
   end
 
   OP_SYMBOLS = %w[+ - * / & | < > =]
 
   def compile_expression
-    @output.puts("<expression>")
     compile_term
 
     while symbol_token?(*OP_SYMBOLS)
@@ -263,13 +222,9 @@ class CompilationEngine
     end
 
     write_operator(operator_symbol)
-
-    @output.puts("</expression>")
   end
 
   def compile_expression_list
-    @output.puts("<expressionList>")
-
     @expressions_count = 0
     unless symbol_token?(")")
       compile_expression
@@ -281,20 +236,14 @@ class CompilationEngine
         @expressions_count += 1
       end
     end
-
-    @output.puts("</expressionList>")
   end
 
   def compile_do
-    @output.puts("<doStatement>")
     output_token # do
     compile_subroutine_call
-    @output.puts("</doStatement>")
   end
 
   def compile_term
-    @output.puts("<term>")
-
     if symbol_token?("-", "~")
       output_token # unary op
       compile_term
@@ -306,11 +255,6 @@ class CompilationEngine
 
     else
       name = @tokenizer.identifier
-      if @tokenizer.token_type == :IDENTIFIER
-        @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")
-      end
-
-      output_token # int / str / keyword / identifier / start of a subroutine call
       if symbol_token?("[")
         output_token # [
         compile_expression
@@ -329,15 +273,11 @@ class CompilationEngine
         output_token # )
       end
     end
-
-    @output.puts("</term>")
   end
 
   private
 
   def compile_subroutine_body
-    @output.puts("<subroutineBody>")
-
     output_token # {
 
     while keyword_token?(:VAR)
@@ -347,21 +287,16 @@ class CompilationEngine
     compile_statements
 
     output_token # }
-
-    @output.puts("</subroutineBody>")
   end
 
   def compile_subroutine_call
     class_name = @tokenizer.identifier
     output_token # subroutineName
 
-    @output.puts("(subroutine, nil, false, nil)")
-
     if symbol_token?(".")
       output_token # .
       subroutine_name = @tokenizer.identifier
       output_token # subroutineName
-      @output.puts("(subroutine, nil, false, nil)")
     end
 
     output_token # (
@@ -379,16 +314,10 @@ class CompilationEngine
 
   def output_token
     case tokenizer.token_type
-    when :STRING_CONST
-      token = tokenizer.string_val
-      token_type = "stringConstant"
     when :INT_CONST
-      token = tokenizer.int_val.to_s
-      token_type = "integerConstant"
       @vm_writer.write_push(:CONST, tokenizer.int_val)
     when :KEYWORD
       token = tokenizer.key_word.downcase.to_s
-      token_type = "keyword"
       case token
       when "return"
         if @subroutine_type == :VOID
@@ -396,15 +325,8 @@ class CompilationEngine
           @vm_writer.write_return
         end
       end
-    when :IDENTIFIER
-      token = tokenizer.identifier
-      token_type = "identifier"
-    when :SYMBOL
-      token = tokenizer.symbol
-      token_type = "symbol"
     end
 
-    @output.puts("<#{token_type}> #{CGI.escapeHTML(token)} </#{token_type}>")
     advance
   end
 
