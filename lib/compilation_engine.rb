@@ -1,12 +1,14 @@
 require 'cgi'
 require_relative 'jack_tokenizer'
 require_relative 'symbol_table'
+require_relative 'vm_writer'
 
 class CompilationEngine
   def initialize(input, output, tokenizer: JackTokenizer.new(input))
     @output = output
     @tokenizer = tokenizer
     @symbol_table = SymbolTable.new
+    @vm_writer = VMWriter.new(output)
   end
 
   attr_reader :tokenizer
@@ -16,10 +18,12 @@ class CompilationEngine
     advance
 
     output_token # class
+
+    @class_name = @tokenizer.identifier
     output_token # className
 
     @output.puts("(class, defined, false, nil)")
-    
+
     output_token # {
 
     until symbol_token?("}")
@@ -58,7 +62,7 @@ class CompilationEngine
       output_token # varName
 
       @symbol_table.define(name, type, kind)
-      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")  
+      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
     end
 
     output_token # ;
@@ -69,13 +73,15 @@ class CompilationEngine
   def compile_subroutine
     @output.puts("<subroutineDec>")
 
-    @symbol_table.start_subroutine 
+    @symbol_table.start_subroutine
 
     kind = @tokenizer.key_word
     output_token # constructor / function / method
 
     type = @tokenizer.key_word
     output_token # void / type
+
+    name = @tokenizer.identifier
     output_token # subroutineName
 
     @output.puts("(#{kind}, defined, false, nil)")
@@ -84,6 +90,9 @@ class CompilationEngine
     compile_parameter_list
 
     output_token # )
+
+    full_subroutine_name = "#{@class_name}.#{name}"
+    @vm_writer.write_function(full_subroutine_name, @symbol_table.var_count(name))
 
     compile_subroutine_body
 
@@ -102,7 +111,7 @@ class CompilationEngine
       output_token # varName
 
       @symbol_table.define(name, type, kind)
-      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")  
+      @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")
 
       while symbol_token?(",")
         output_token # ,
@@ -114,7 +123,7 @@ class CompilationEngine
         output_token # varName
 
         @symbol_table.define(name, type, kind)
-        @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")  
+        @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")
       end
     end
 
