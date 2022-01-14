@@ -78,7 +78,7 @@ class CompilationEngine
     kind = @tokenizer.key_word
     output_token # constructor / function / method
 
-    type = @tokenizer.key_word
+    @subroutine_type = type = @tokenizer.key_word
     output_token # void / type
 
     name = @tokenizer.identifier
@@ -389,6 +389,13 @@ class CompilationEngine
     when :KEYWORD
       token = tokenizer.key_word.downcase.to_s
       token_type = "keyword"
+      case token
+      when "return"
+        if @subroutine_type == :VOID
+          @vm_writer.write_push(:CONST, 0)
+          @vm_writer.write_return
+        end
+      end
     when :IDENTIFIER
       token = tokenizer.identifier
       token_type = "identifier"
