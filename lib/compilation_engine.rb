@@ -262,12 +262,7 @@ class CompilationEngine
       compile_term
     end
 
-    case operator_symbol
-    when "*"
-      @vm_writer.write_call("Math.multiply", 2)
-    when "+"
-      @vm_writer.write_arithmetic(:ADD)
-    end
+    write_operator(operator_symbol)
 
     @output.puts("</expression>")
   end
@@ -406,6 +401,15 @@ class CompilationEngine
       @tokenizer.token_type == :KEYWORD
     else
       @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == keyword
+    end
+  end
+
+  def write_operator(symbol)
+    case symbol
+    when "*"
+      @vm_writer.write_call("Math.multiply", 2)
+    when "+"
+      @vm_writer.write_arithmetic(:ADD)
     end
   end
 end
