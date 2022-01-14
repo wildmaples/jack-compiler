@@ -9,31 +9,31 @@ class VMWriterTest < Minitest::Test
 
   def test_write_function
     @vm_writer.write_function("Main.foo", 3)
-    assert_equal("function Main.foo 3", @output.string)
+    assert_equal("function Main.foo 3\n", @output.string)
   end
 
   def test_write_push_constant
     @vm_writer.write_push(:CONST, 3)
-    assert_equal("push constant 3", @output.string)
+    assert_equal("push constant 3\n", @output.string)
   end
 
   def test_write_push_pointer
     @vm_writer.write_push(:POINTER, 10)
-    assert_equal("push pointer 10", @output.string)
+    assert_equal("push pointer 10\n", @output.string)
   end
 
   def test_write_call
     @vm_writer.write_call("foo", 3)
-    assert_equal("call foo 3", @output.string)
+    assert_equal("call foo 3\n", @output.string)
   end
 
   def test_write_arithmetic_add
     @vm_writer.write_arithmetic(:ADD)
-    assert_equal("add", @output.string)
+    assert_equal("add\n", @output.string)
   end
 
   def test_write_pop_arguments
     @vm_writer.write_pop(:ARG, 10)
-    assert_equal("pop argument 10", @output.string)
+    assert_equal("pop argument 10\n", @output.string)
   end
 end
