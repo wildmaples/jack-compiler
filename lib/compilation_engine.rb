@@ -1,10 +1,12 @@
 require 'cgi'
 require_relative 'jack_tokenizer'
+require_relative 'symbol_table'
 
 class CompilationEngine
   def initialize(input, output, tokenizer: JackTokenizer.new(input))
     @output = output
     @tokenizer = tokenizer
+    @symbol_table = SymbolTable.new
   end
 
   attr_reader :tokenizer
@@ -15,6 +17,9 @@ class CompilationEngine
 
     output_token # class
     output_token # className
+
+    @output.puts("(class, defined, false, nil)")
+    
     output_token # {
 
     until symbol_token?("}")
@@ -34,13 +39,26 @@ class CompilationEngine
   def compile_class_var_dec
     @output.puts("<classVarDec>")
 
+    kind = @tokenizer.key_word
     output_token # static / field
+
+    type = @tokenizer.key_word
     output_token # type
+
+    name = @tokenizer.identifier
     output_token # varName
+
+    @symbol_table.define(name, type, kind)
+    @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
 
     while symbol_token?(",")
       output_token # ,
+
+      name = @tokenizer.identifier
       output_token # varName
+
+      @symbol_table.define(name, type, kind)
+      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")  
     end
 
     output_token # ;
@@ -51,9 +69,16 @@ class CompilationEngine
   def compile_subroutine
     @output.puts("<subroutineDec>")
 
+    @symbol_table.start_subroutine 
+
+    kind = @tokenizer.key_word
     output_token # constructor / function / method
+
+    type = @tokenizer.key_word
     output_token # void / type
     output_token # subroutineName
+
+    @output.puts("(#{kind}, defined, false, nil)")
     output_token # (
 
     compile_parameter_list
@@ -69,13 +94,27 @@ class CompilationEngine
     @output.puts("<parameterList>")
 
     unless symbol_token?(")")
+      kind = :ARG
+      type = @tokenizer.key_word
       output_token # type
+
+      name = @tokenizer.identifier
       output_token # varName
+
+      @symbol_table.define(name, type, kind)
+      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")  
 
       while symbol_token?(",")
         output_token # ,
+
+        type = @tokenizer.key_word
         output_token # type
+
+        name = @tokenizer.identifier
         output_token # varName
+
+        @symbol_table.define(name, type, kind)
+        @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")  
       end
     end
 
@@ -84,13 +123,27 @@ class CompilationEngine
 
   def compile_var_dec
     @output.puts("<varDec>")
+
+    kind = @tokenizer.key_word
     output_token # var
+
+    type = @tokenizer.key_word
     output_token # type
+
+    name = @tokenizer.identifier
     output_token # varName
+
+    @symbol_table.define(name, type, kind)
+    @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
 
     while symbol_token?(",")
       output_token # ,
+
+      name = @tokenizer.identifier
       output_token # varName
+
+      @symbol_table.define(name, type, kind)
+      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
     end
 
     output_token # ;
@@ -237,8 +290,12 @@ class CompilationEngine
       output_token # )
 
     else
-      output_token # int / str / keyword / identifier / start of a subroutine call
+      name = @tokenizer.identifier
+      if @tokenizer.token_type == :IDENTIFIER
+        @output.puts("(#{@symbol_table.kind_of(name)}, used, true, #{@symbol_table.index_of(name)})")
+      end
 
+      output_token # int / str / keyword / identifier / start of a subroutine call
       if symbol_token?("[")
         output_token # [
         compile_expression
@@ -281,10 +338,12 @@ class CompilationEngine
 
   def compile_subroutine_call
     output_token # subroutineName
+    @output.puts("(subroutine, nil, false, nil)")
 
     if symbol_token?(".")
       output_token # .
       output_token # subroutineName
+      @output.puts("(subroutine, nil, false, nil)")
     end
 
     output_token # (
