@@ -8,7 +8,6 @@ class CompilationEngineTest < Minitest::Test
     vm_file_path = File.join("test/expected", "#{base_name}.vm")
 
     define_method("test_acceptance_#{base_name}") do
-      skip("Not fully implemented yet")
       expected_vm_code = File.open(vm_file_path)
 
       output = StringIO.new
