@@ -270,12 +270,15 @@ class CompilationEngine
   def compile_expression_list
     @output.puts("<expressionList>")
 
+    @expressions_count = 0
     unless symbol_token?(")")
       compile_expression
+      @expressions_count += 1
 
       while symbol_token?(",")
         output_token # ,
         compile_expression
+        @expressions_count += 1
       end
     end
 
@@ -349,11 +352,14 @@ class CompilationEngine
   end
 
   def compile_subroutine_call
+    class_name = @tokenizer.identifier
     output_token # subroutineName
+
     @output.puts("(subroutine, nil, false, nil)")
 
     if symbol_token?(".")
       output_token # .
+      subroutine_name = @tokenizer.identifier
       output_token # subroutineName
       @output.puts("(subroutine, nil, false, nil)")
     end
@@ -362,6 +368,9 @@ class CompilationEngine
     compile_expression_list
     output_token # )
     output_token # ;
+
+    @vm_writer.write_call("#{class_name}.#{subroutine_name}", @expressions_count)
+    @vm_writer.write_pop(:TEMP, 0)
   end
 
   def advance
