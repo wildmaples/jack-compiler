@@ -251,6 +251,8 @@ class CompilationEngine
 
     else
       name = @tokenizer.identifier
+      output_token # int / str / keyword / identifier / start of a subroutine call
+
       if symbol_token?("[")
         output_token # [
         compile_expression
