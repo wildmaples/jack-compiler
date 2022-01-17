@@ -157,6 +157,8 @@ class CompilationEngine
 
   def compile_let
     output_token # let
+
+    variable_name = @tokenizer.identifier
     output_token # varName
 
     if symbol_token?("[")
@@ -168,6 +170,7 @@ class CompilationEngine
     output_token # =
 
     compile_expression # expression
+    @vm_writer.write_pop(:LOCAL, @symbol_table.index_of(variable_name))
 
     output_token # ;
   end
@@ -264,10 +267,15 @@ class CompilationEngine
 
       elsif symbol_token?(".")
         output_token # .
+
+        subroutine_name = @tokenizer.identifier
         output_token # subroutineName
+
         output_token # (
         compile_expression_list
         output_token # )
+
+        @vm_writer.write_call("#{name}.#{subroutine_name}", @expressions_count)
       end
     end
   end
