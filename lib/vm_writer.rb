@@ -4,7 +4,7 @@ class VMWriter
   end
 
   def write_function(name, num_locals)
-    @output.puts "function #{name} #{num_locals.to_s}"
+    @output.puts "function #{name} #{num_locals}"
   end
 
   SEGMENT_TO_VM_SYNTAX_MAP = {
@@ -19,15 +19,15 @@ class VMWriter
   }
 
   def write_push(segment, index)
-    @output.puts "push #{SEGMENT_TO_VM_SYNTAX_MAP[segment]} #{index.to_s}"
+    @output.puts "push #{SEGMENT_TO_VM_SYNTAX_MAP[segment]} #{index}"
   end
 
   def write_pop(segment, index)
-    @output.puts "pop #{SEGMENT_TO_VM_SYNTAX_MAP[segment]} #{index.to_s}"
+    @output.puts "pop #{SEGMENT_TO_VM_SYNTAX_MAP[segment]} #{index}"
   end
 
   def write_call(name, num_args)
-    @output.puts "call #{name} #{num_args.to_s}"
+    @output.puts "call #{name} #{num_args}"
   end
 
   def write_arithmetic(command)
