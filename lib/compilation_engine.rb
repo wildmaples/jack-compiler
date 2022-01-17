@@ -238,8 +238,10 @@ class CompilationEngine
 
   def compile_term
     if symbol_token?("-", "~")
+      unary_op = @tokenizer.symbol
       output_token # unary op
       compile_term
+      @vm_writer.write_arithmetic(:NEG) if unary_op == "-"
 
     elsif symbol_token?("(")
       output_token # (

@@ -31,7 +31,7 @@ class VMWriter
   end
 
   def write_arithmetic(command)
-    @output.puts "add"
+    @output.puts command.to_s.downcase
   end
 
   def write_return
