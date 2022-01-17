@@ -39,6 +39,6 @@ class VMWriterTest < Minitest::Test
 
   def test_write_return
     @vm_writer.write_return
-    assert_equal("return", @output.string)
+    assert_equal("return\n", @output.string)
   end
 end

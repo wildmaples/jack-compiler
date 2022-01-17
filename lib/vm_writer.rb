@@ -35,6 +35,6 @@ class VMWriter
   end
 
   def write_return
-    @output.print "return"
+    @output.puts "return"
   end
 end
