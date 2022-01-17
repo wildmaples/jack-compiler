@@ -68,15 +68,12 @@ class CompilationEngine
     @subroutine_type = type = @tokenizer.key_word
     output_token # void / type
 
-    name = @tokenizer.identifier
+    @subroutine_name = @tokenizer.identifier
     output_token # subroutineName
 
     output_token # (
     compile_parameter_list
     output_token # )
-
-    full_subroutine_name = "#{@class_name}.#{name}"
-    @vm_writer.write_function(full_subroutine_name, @symbol_table.var_count(name))
 
     compile_subroutine_body
   end
@@ -281,6 +278,8 @@ class CompilationEngine
     while keyword_token?(:VAR)
       compile_var_dec
     end
+
+    @vm_writer.write_function("#{@class_name}.#{@subroutine_name}", @symbol_table.var_count(:VAR))
 
     compile_statements
 
