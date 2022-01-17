@@ -252,7 +252,12 @@ class CompilationEngine
       output_token # )
 
     else
-      _name = @tokenizer.identifier
+      name = @tokenizer.identifier
+
+      if @symbol_table.kind_of(name) == :VAR
+        @vm_writer.write_push(:LOCAL, @symbol_table.index_of(name))
+      end
+
       output_token # int / str / keyword / identifier / start of a subroutine call
 
       if symbol_token?("[")
