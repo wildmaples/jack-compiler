@@ -62,7 +62,7 @@ class CompilationEngine
   def compile_subroutine
     @symbol_table.start_subroutine
 
-    kind = @tokenizer.key_word
+    _kind = @tokenizer.key_word
     output_token # constructor / function / method
 
     @subroutine_type = type = @tokenizer.key_word
@@ -250,7 +250,7 @@ class CompilationEngine
       output_token # )
 
     else
-      name = @tokenizer.identifier
+      _name = @tokenizer.identifier
       output_token # int / str / keyword / identifier / start of a subroutine call
 
       if symbol_token?("[")
