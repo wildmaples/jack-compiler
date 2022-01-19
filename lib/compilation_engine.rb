@@ -68,15 +68,12 @@ class CompilationEngine
     @subroutine_type = type = @tokenizer.key_word
     output_token # void / type
 
-    name = @tokenizer.identifier
+    @subroutine_name = @tokenizer.identifier
     output_token # subroutineName
 
     output_token # (
     compile_parameter_list
     output_token # )
-
-    full_subroutine_name = "#{@class_name}.#{name}"
-    @vm_writer.write_function(full_subroutine_name, @symbol_table.var_count(name))
 
     compile_subroutine_body
   end
@@ -160,6 +157,8 @@ class CompilationEngine
 
   def compile_let
     output_token # let
+
+    variable_name = @tokenizer.identifier
     output_token # varName
 
     if symbol_token?("[")
@@ -171,6 +170,7 @@ class CompilationEngine
     output_token # =
 
     compile_expression # expression
+    @vm_writer.write_pop(:LOCAL, @symbol_table.index_of(variable_name))
 
     output_token # ;
   end
@@ -241,8 +241,10 @@ class CompilationEngine
 
   def compile_term
     if symbol_token?("-", "~")
+      unary_op = @tokenizer.symbol
       output_token # unary op
       compile_term
+      @vm_writer.write_arithmetic(:NEG) if unary_op == "-"
 
     elsif symbol_token?("(")
       output_token # (
@@ -250,7 +252,12 @@ class CompilationEngine
       output_token # )
 
     else
-      _name = @tokenizer.identifier
+      name = @tokenizer.identifier
+
+      if @symbol_table.kind_of(name) == :VAR
+        @vm_writer.write_push(:LOCAL, @symbol_table.index_of(name))
+      end
+
       output_token # int / str / keyword / identifier / start of a subroutine call
 
       if symbol_token?("[")
@@ -265,10 +272,15 @@ class CompilationEngine
 
       elsif symbol_token?(".")
         output_token # .
+
+        subroutine_name = @tokenizer.identifier
         output_token # subroutineName
+
         output_token # (
         compile_expression_list
         output_token # )
+
+        @vm_writer.write_call("#{name}.#{subroutine_name}", @expressions_count)
       end
     end
   end
@@ -281,6 +293,8 @@ class CompilationEngine
     while keyword_token?(:VAR)
       compile_var_dec
     end
+
+    @vm_writer.write_function("#{@class_name}.#{@subroutine_name}", @symbol_table.var_count(:VAR))
 
     compile_statements
 

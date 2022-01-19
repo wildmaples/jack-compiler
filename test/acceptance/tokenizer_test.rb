@@ -7,6 +7,10 @@ class TokenizerAcceptanceTest < Minitest::Test
   Dir.glob("*/*.jack", base: "examples").each do |file_name|
     base_name = File.join(File.dirname(file_name), File.basename(file_name, ".*"))
     expected_xml_path = File.join("test/expected", "#{base_name}T.xml")
+
+    # don't test jack files without a matching token XML file
+    next unless File.file?(expected_xml_path)
+
     test_name = "test_acceptance_#{base_name}"
 
     define_method(test_name) do
