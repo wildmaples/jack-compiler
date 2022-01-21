@@ -16,7 +16,17 @@ Number = Struct.new(:value) do
   end
 end
 
-UnaryOp = Struct.new(:operator, :operand)
+UnaryOp = Struct.new(:operator, :operand) do
+  def write_vm_code(vm_writer)
+    operand.write_vm_code(vm_writer)
+    case operator
+    when "-"
+      vm_writer.write_arithmetic(:NEG)
+    when "~"
+      vm_writer.write_arithmetic(:NOT)
+    end
+  end
+end
 
 OP_SYMBOLS = %w[+ - * / & | < > =]
 
@@ -39,8 +49,18 @@ class ExpressionParser
   end
 
   def parse_term
-    ast = Number.new(@tokenizer.int_val)
-    @tokenizer.advance
+    case @tokenizer.token_type
+    when :INT_CONST
+      ast = Number.new(@tokenizer.int_val)
+      @tokenizer.advance
+
+    when :SYMBOL
+      operator = @tokenizer.symbol
+      @tokenizer.advance
+      operand = parse_expression
+      ast = UnaryOp.new(operator, operand)
+    end
+
     ast
   end
 end
