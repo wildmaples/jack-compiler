@@ -2,6 +2,7 @@ require 'cgi'
 require_relative 'jack_tokenizer'
 require_relative 'symbol_table'
 require_relative 'vm_writer'
+require_relative 'expression_parser'
 
 class CompilationEngine
   def initialize(input, output, tokenizer: JackTokenizer.new(input))
@@ -206,18 +207,26 @@ class CompilationEngine
     end
   end
 
-  OP_SYMBOLS = %w[+ - * / & | < > =]
-
   def compile_expression
-    compile_term
+    # step 1: build an AST that represents the expression
+    ast = ExpressionParser.new(@tokenizer).parse_expression
 
-    while symbol_token?(*OP_SYMBOLS)
-      operator_symbol = @tokenizer.symbol
-      output_token # op symbol
-      compile_term
-    end
+    @output.puts ast
+    # step 2: print out the VM code for that AST
+    ast.write_vm_code(@vm_writer)
 
-    write_operator(operator_symbol)
+  #   @stack = []
+  #   compile_term
+
+  #   while symbol_token?(*OP_SYMBOLS)
+  #     operator_symbol = @tokenizer.symbol
+  #     @stack << operator_symbol
+  #     output_token # op symbol
+  #     compile_term
+  #   end
+
+  #   @output.puts @ast
+  #   write_operator(operator_symbol)
   end
 
   def compile_expression_list
