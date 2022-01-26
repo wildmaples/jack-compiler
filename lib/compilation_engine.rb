@@ -10,7 +10,7 @@ class CompilationEngine
     @tokenizer = tokenizer
     @symbol_table = SymbolTable.new
     @vm_writer = VMWriter.new(output)
-    @expression_parser = ExpressionParser.new(@tokenizer)
+    @expression_parser = ExpressionParser.new(@tokenizer, @symbol_table)
   end
 
   attr_reader :tokenizer

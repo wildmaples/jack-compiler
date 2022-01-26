@@ -39,11 +39,18 @@ SubroutineCall = Struct.new(:class_name, :subroutine_name, :expression_list) do
   end
 end
 
+LocalVariable = Struct.new(:name, :index) do
+  def write_vm_code(vm_writer)
+    vm_writer.write_push(:LOCAL, index)
+  end
+end
+
 OP_SYMBOLS = %w[+ - * / & | < > =]
 
 class ExpressionParser
-  def initialize(tokenizer)
+  def initialize(tokenizer, symbol_table)
     @tokenizer = tokenizer
+    @symbol_table = symbol_table
   end
 
   def parse_expression
@@ -81,17 +88,25 @@ class ExpressionParser
       end
     when :IDENTIFIER
       name = @tokenizer.identifier
-      advance
 
-      if symbol_token?(".")
-        advance
-        subroutine_name = @tokenizer.identifier
+      unless @symbol_table.kind_of(name) == :NONE
+        index = @symbol_table.index_of(name)
+        ast = LocalVariable.new(name, index)
         advance
 
+      else
         advance
-        list = parse_expression_list
-        advance
-        ast = SubroutineCall.new(name, subroutine_name, list)
+
+        if symbol_token?(".")
+          advance
+          subroutine_name = @tokenizer.identifier
+          advance
+
+          advance
+          list = parse_expression_list
+          advance
+          ast = SubroutineCall.new(name, subroutine_name, list)
+        end
       end
     end
 
