@@ -148,7 +148,9 @@ class CompilationEngine
   end
 
   def compile_return
-    output_token # return
+    @vm_writer.write_push(:CONST, 0)
+    @vm_writer.write_return
+    advance
 
     unless symbol_token?(";")
       compile_expression
@@ -305,20 +307,6 @@ class CompilationEngine
   end
 
   def output_token
-    case tokenizer.token_type
-    when :INT_CONST
-      @vm_writer.write_push(:CONST, tokenizer.int_val)
-    when :KEYWORD
-      token = tokenizer.key_word.downcase.to_s
-      case token
-      when "return"
-        if @subroutine_type == :VOID
-          @vm_writer.write_push(:CONST, 0)
-          @vm_writer.write_return
-        end
-      end
-    end
-
     advance
   end
 
