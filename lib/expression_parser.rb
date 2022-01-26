@@ -127,6 +127,8 @@ class ExpressionParser
     list
   end
 
+  private
+
   def symbol_token?(*symbols)
     @tokenizer.token_type == :SYMBOL && symbols.include?(@tokenizer.symbol)
   end
