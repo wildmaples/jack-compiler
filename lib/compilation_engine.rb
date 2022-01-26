@@ -311,21 +311,9 @@ class CompilationEngine
   end
 
   def compile_subroutine_call
-    class_name = @tokenizer.identifier
-    output_token # subroutineName
-
-    if symbol_token?(".")
-      output_token # .
-      subroutine_name = @tokenizer.identifier
-      output_token # subroutineName
-    end
-
-    output_token # (
-    compile_expression_list
-    output_token # )
-    output_token # ;
-
-    @vm_writer.write_call("#{class_name}.#{subroutine_name}", @expressions_count)
+    parser = ExpressionParser.new(@tokenizer)
+    parser.parse_term.write_vm_code(@vm_writer)
+    advance # ; 
     @vm_writer.write_pop(:TEMP, 0)
   end
 
