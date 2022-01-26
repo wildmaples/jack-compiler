@@ -10,6 +10,7 @@ class CompilationEngine
     @tokenizer = tokenizer
     @symbol_table = SymbolTable.new
     @vm_writer = VMWriter.new(output)
+    @expression_parser = ExpressionParser.new(@tokenizer)
   end
 
   attr_reader :tokenizer
@@ -209,7 +210,7 @@ class CompilationEngine
 
   def compile_expression
     # step 1: build an AST that represents the expression
-    ast = ExpressionParser.new(@tokenizer).parse_expression
+    ast = @expression_parser.parse_expression
 
     @output.puts ast
     # step 2: print out the VM code for that AST
@@ -311,9 +312,8 @@ class CompilationEngine
   end
 
   def compile_subroutine_call
-    parser = ExpressionParser.new(@tokenizer)
-    parser.parse_term.write_vm_code(@vm_writer)
-    advance # ; 
+    @expression_parser.parse_term.write_vm_code(@vm_writer)
+    advance # ;
     @vm_writer.write_pop(:TEMP, 0)
   end
 
