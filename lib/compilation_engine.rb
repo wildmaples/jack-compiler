@@ -317,13 +317,4 @@ class CompilationEngine
       @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == keyword
     end
   end
-
-  def write_operator(symbol)
-    case symbol
-    when "*"
-      @vm_writer.write_call("Math.multiply", 2)
-    when "+"
-      @vm_writer.write_arithmetic(:ADD)
-    end
-  end
 end
