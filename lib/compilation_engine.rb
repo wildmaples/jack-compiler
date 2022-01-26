@@ -292,9 +292,7 @@ class CompilationEngine
     end
 
     @vm_writer.write_function("#{@class_name}.#{@subroutine_name}", @symbol_table.var_count(:VAR))
-
     compile_statements
-
     advance # }
   end
 
