@@ -40,7 +40,7 @@ class ExpressionParser
 
     if symbol_token?(*OP_SYMBOLS)
       operator = @tokenizer.symbol
-      @tokenizer.advance
+      advance
       right = parse_expression
       ArithmeticOp.new(operator, left, right)
 
@@ -53,20 +53,20 @@ class ExpressionParser
     case @tokenizer.token_type
     when :INT_CONST
       ast = Number.new(@tokenizer.int_val)
-      @tokenizer.advance
+      advance
 
     when :SYMBOL
       symbol = @tokenizer.symbol
 
       if symbol_token?("-", "~")
-        @tokenizer.advance
+        advance
         operand = parse_expression
         ast = UnaryOp.new(symbol, operand)
 
       elsif symbol_token?("(")
-        @tokenizer.advance
+        advance
         ast = parse_expression
-        @tokenizer.advance
+        advance
       end
     end
 
@@ -75,5 +75,9 @@ class ExpressionParser
 
   def symbol_token?(*symbols)
     @tokenizer.token_type == :SYMBOL && symbols.include?(@tokenizer.symbol)
+  end
+
+  def advance
+    @tokenizer.has_more_tokens? && @tokenizer.advance
   end
 end
