@@ -28,6 +28,15 @@ UnaryOp = Struct.new(:operator, :operand) do
   end
 end
 
+SubroutineCall = Struct.new(:class_name, :subroutine_name, :expression_list) do
+  def write_vm_code(vm_writer)
+    expression_list.each do |expression|
+      expression.write_vm_code(vm_writer)
+    end
+    vm_writer.write_call("#{class_name}.#{subroutine_name}", expression_list.length)
+  end
+end
+
 OP_SYMBOLS = %w[+ - * / & | < > =]
 
 class ExpressionParser
@@ -68,9 +77,37 @@ class ExpressionParser
         ast = parse_expression
         advance
       end
+    when :IDENTIFIER
+      name = @tokenizer.identifier
+      advance
+
+      if symbol_token?(".")
+        advance
+        subroutine_name = @tokenizer.identifier
+        advance
+
+        advance
+        list = parse_expression_list
+        advance
+        ast = SubroutineCall.new(name, subroutine_name, list)
+      end
     end
 
-    ast
+    return ast
+  end
+
+  def parse_expression_list
+    list = []
+
+    unless symbol_token?(")")
+      loop do
+        list << parse_expression
+        break unless symbol_token?(",")
+        advance # ,
+      end
+    end
+
+    list
   end
 
   def symbol_token?(*symbols)
