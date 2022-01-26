@@ -209,25 +209,8 @@ class CompilationEngine
   end
 
   def compile_expression
-    # step 1: build an AST that represents the expression
     ast = @expression_parser.parse_expression
-
-    @output.puts ast
-    # step 2: print out the VM code for that AST
     ast.write_vm_code(@vm_writer)
-
-  #   @stack = []
-  #   compile_term
-
-  #   while symbol_token?(*OP_SYMBOLS)
-  #     operator_symbol = @tokenizer.symbol
-  #     @stack << operator_symbol
-  #     output_token # op symbol
-  #     compile_term
-  #   end
-
-  #   @output.puts @ast
-  #   write_operator(operator_symbol)
   end
 
   def compile_expression_list
