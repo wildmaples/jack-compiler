@@ -231,7 +231,9 @@ class CompilationEngine
 
   def compile_do
     advance # do
-    compile_subroutine_call
+    @expression_parser.parse_term.write_vm_code(@vm_writer)
+    advance # ;
+    @vm_writer.write_pop(:TEMP, 0)
   end
 
   def compile_term
@@ -294,12 +296,6 @@ class CompilationEngine
     compile_statements
 
     advance # }
-  end
-
-  def compile_subroutine_call
-    @expression_parser.parse_term.write_vm_code(@vm_writer)
-    advance # ;
-    @vm_writer.write_pop(:TEMP, 0)
   end
 
   def advance
