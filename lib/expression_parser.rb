@@ -6,6 +6,8 @@ ArithmeticOp = Struct.new(:operator, :left, :right) do
     case operator
     when "+"
       vm_writer.write_arithmetic(:ADD)
+    when "*"
+      vm_writer.write_call("Math.multiply", 2)
     end
   end
 end
