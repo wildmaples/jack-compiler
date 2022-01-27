@@ -110,7 +110,7 @@ class ExpressionParser
       end
     end
 
-    return ast
+    ast
   end
 
   def parse_expression_list
