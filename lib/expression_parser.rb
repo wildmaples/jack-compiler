@@ -98,12 +98,13 @@ class ExpressionParser
         advance
 
         if symbol_token?(".")
-          advance # subroutine name
+          advance
           subroutine_name = @tokenizer.identifier
-          advance # (
-          advance # )
+          advance
+
+          advance
           list = parse_expression_list
-          advance # ;
+          advance
           ast = SubroutineCall.new(name, subroutine_name, list)
         end
       end
