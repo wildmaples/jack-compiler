@@ -12,6 +12,7 @@ class CompilationEngine
     @vm_writer = VMWriter.new(output)
     @expression_parser = ExpressionParser.new(@tokenizer, @symbol_table)
 
+    @while_count = 0
     @if_count = 0
   end
 
@@ -182,15 +183,26 @@ class CompilationEngine
   end
 
   def compile_while
+    while_count = @while_count
+    @while_count += 1
+
     advance # while
+    @vm_writer.write_label("WHILE_COND#{while_count}")
 
     advance # (
     compile_expression
     advance # )
 
+    @vm_writer.write_if("WHILE_TRUE#{while_count}")
+    @vm_writer.write_goto("WHILE_END#{while_count}")
+    @vm_writer.write_label("WHILE_TRUE#{while_count}")
+
     advance # {
     compile_statements
     advance # }
+
+    @vm_writer.write_goto("WHILE_COND#{while_count}")
+    @vm_writer.write_label("WHILE_END#{while_count}")
   end
 
   def compile_if
