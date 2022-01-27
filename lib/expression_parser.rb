@@ -18,6 +18,13 @@ Number = Struct.new(:value) do
   end
 end
 
+Boolean = Struct.new(:value) do
+  def write_vm_code(vm_writer)
+    vm_writer.write_push(:CONST, 0)
+    vm_writer.write_arithmetic(:NOT) if value == :TRUE
+  end
+end
+
 UnaryOp = Struct.new(:operator, :operand) do
   def write_vm_code(vm_writer)
     operand.write_vm_code(vm_writer)
@@ -72,6 +79,14 @@ class ExpressionParser
     when :INT_CONST
       ast = Number.new(@tokenizer.int_val)
       advance
+
+    when :KEYWORD
+      keyword = @tokenizer.key_word
+
+      if [:TRUE, :FALSE].include?(keyword)
+        ast = Boolean.new(keyword)
+        advance
+      end
 
     when :SYMBOL
       symbol = @tokenizer.symbol
