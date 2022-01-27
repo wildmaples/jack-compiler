@@ -236,52 +236,6 @@ class CompilationEngine
     @vm_writer.write_pop(:TEMP, 0)
   end
 
-  def compile_term
-    if symbol_token?("-", "~")
-      unary_op = @tokenizer.symbol
-      advance # unary op
-      compile_term
-      @vm_writer.write_arithmetic(:NEG) if unary_op == "-"
-
-    elsif symbol_token?("(")
-      advance # (
-      compile_expression
-      advance # )
-
-    else
-      name = @tokenizer.identifier
-
-      if @symbol_table.kind_of(name) == :VAR
-        @vm_writer.write_push(:LOCAL, @symbol_table.index_of(name))
-      end
-
-      advance # int / str / keyword / identifier / start of a subroutine call
-
-      if symbol_token?("[")
-        advance # [
-        compile_expression
-        advance # ]
-
-      elsif symbol_token?("(")
-        advance # (
-        compile_expression_list
-        advance # )
-
-      elsif symbol_token?(".")
-        advance # .
-
-        subroutine_name = @tokenizer.identifier
-        advance # subroutineName
-
-        advance # (
-        compile_expression_list
-        advance # )
-
-        @vm_writer.write_call("#{name}.#{subroutine_name}", @expressions_count)
-      end
-    end
-  end
-
   private
 
   def compile_subroutine_body
