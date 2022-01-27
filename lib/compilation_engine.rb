@@ -2,6 +2,7 @@ require 'cgi'
 require_relative 'jack_tokenizer'
 require_relative 'symbol_table'
 require_relative 'vm_writer'
+require_relative 'expression_parser'
 
 class CompilationEngine
   def initialize(input, output, tokenizer: JackTokenizer.new(input))
@@ -9,18 +10,19 @@ class CompilationEngine
     @tokenizer = tokenizer
     @symbol_table = SymbolTable.new
     @vm_writer = VMWriter.new(output)
+    @expression_parser = ExpressionParser.new(@tokenizer, @symbol_table)
   end
 
   attr_reader :tokenizer
 
   def compile_class
     advance
-    output_token # class
+    advance # class
 
     @class_name = @tokenizer.identifier
-    output_token # className
+    advance # className
 
-    output_token # {
+    advance # {
 
     until symbol_token?("}")
       case @tokenizer.key_word
@@ -31,49 +33,49 @@ class CompilationEngine
       end
     end
 
-    output_token # }
+    advance # }
   end
 
   def compile_class_var_dec
     kind = @tokenizer.key_word
-    output_token # static / field
+    advance # static / field
 
     type = @tokenizer.key_word
-    output_token # type
+    advance # type
 
     name = @tokenizer.identifier
-    output_token # varName
+    advance # varName
 
     @symbol_table.define(name, type, kind)
 
     while symbol_token?(",")
-      output_token # ,
+      advance # ,
 
       name = @tokenizer.identifier
-      output_token # varName
+      advance # varName
 
       @symbol_table.define(name, type, kind)
       @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
     end
 
-    output_token # ;
+    advance # ;
   end
 
   def compile_subroutine
     @symbol_table.start_subroutine
 
     _kind = @tokenizer.key_word
-    output_token # constructor / function / method
+    advance # constructor / function / method
 
     @subroutine_type = type = @tokenizer.key_word
-    output_token # void / type
+    advance # void / type
 
     @subroutine_name = @tokenizer.identifier
-    output_token # subroutineName
+    advance # subroutineName
 
-    output_token # (
+    advance # (
     compile_parameter_list
-    output_token # )
+    advance # )
 
     compile_subroutine_body
   end
@@ -83,21 +85,21 @@ class CompilationEngine
     unless symbol_token?(")")
       kind = :ARG
       type = @tokenizer.key_word
-      output_token # type
+      advance # type
 
       name = @tokenizer.identifier
-      output_token # varName
+      advance # varName
 
       @symbol_table.define(name, type, kind)
 
       while symbol_token?(",")
-        output_token # ,
+        advance # ,
 
         type = @tokenizer.key_word
-        output_token # type
+        advance # type
 
         name = @tokenizer.identifier
-        output_token # varName
+        advance # varName
 
         @symbol_table.define(name, type, kind)
       end
@@ -106,26 +108,26 @@ class CompilationEngine
 
   def compile_var_dec
     kind = @tokenizer.key_word
-    output_token # var
+    advance # var
 
     type = @tokenizer.key_word
-    output_token # type
+    advance # type
 
     name = @tokenizer.identifier
-    output_token # varName
+    advance # varName
 
     @symbol_table.define(name, type, kind)
 
     while symbol_token?(",")
-      output_token # ,
+      advance # ,
 
       name = @tokenizer.identifier
-      output_token # varName
+      advance # varName
 
       @symbol_table.define(name, type, kind)
     end
 
-    output_token # ;
+    advance # ;
   end
 
   def compile_statements
@@ -146,78 +148,71 @@ class CompilationEngine
   end
 
   def compile_return
-    output_token # return
+    @vm_writer.write_push(:CONST, 0)
+    @vm_writer.write_return
+    advance
 
     unless symbol_token?(";")
       compile_expression
     end
 
-    output_token # ;
+    advance # ;
   end
 
   def compile_let
-    output_token # let
+    advance # let
 
     variable_name = @tokenizer.identifier
-    output_token # varName
+    advance # varName
 
     if symbol_token?("[")
-      output_token # [
+      advance # [
       compile_expression
-      output_token # ]
+      advance # ]
     end
 
-    output_token # =
+    advance # =
 
     compile_expression # expression
     @vm_writer.write_pop(:LOCAL, @symbol_table.index_of(variable_name))
 
-    output_token # ;
+    advance # ;
   end
 
   def compile_while
-    output_token # while
+    advance # while
 
-    output_token # (
+    advance # (
     compile_expression
-    output_token # )
+    advance # )
 
-    output_token # {
+    advance # {
     compile_statements
-    output_token # }
+    advance # }
   end
 
   def compile_if
-    output_token # if
+    advance # if
 
-    output_token # (
+    advance # (
     compile_expression
-    output_token # )
+    advance # )
 
-    output_token # {
+    advance # {
     compile_statements
-    output_token # }
+    advance # }
 
     if keyword_token?(:ELSE)
-      output_token # else
-      output_token # {
+      advance # else
+      advance # {
       compile_statements
-      output_token # }
+      advance # }
     end
   end
 
-  OP_SYMBOLS = %w[+ - * / & | < > =]
-
   def compile_expression
-    compile_term
-
-    while symbol_token?(*OP_SYMBOLS)
-      operator_symbol = @tokenizer.symbol
-      output_token # op symbol
-      compile_term
-    end
-
-    write_operator(operator_symbol)
+    ast = @expression_parser.parse_expression
+    ast.write_vm_code(@vm_writer)
   end
 
   def compile_expression_list
@@ -227,7 +222,7 @@ class CompilationEngine
       @expressions_count += 1
 
       while symbol_token?(",")
-        output_token # ,
+        advance # ,
         compile_expression
         @expressions_count += 1
       end
@@ -235,111 +230,28 @@ class CompilationEngine
   end
 
   def compile_do
-    output_token # do
-    compile_subroutine_call
-  end
-
-  def compile_term
-    if symbol_token?("-", "~")
-      unary_op = @tokenizer.symbol
-      output_token # unary op
-      compile_term
-      @vm_writer.write_arithmetic(:NEG) if unary_op == "-"
-
-    elsif symbol_token?("(")
-      output_token # (
-      compile_expression
-      output_token # )
-
-    else
-      name = @tokenizer.identifier
-
-      if @symbol_table.kind_of(name) == :VAR
-        @vm_writer.write_push(:LOCAL, @symbol_table.index_of(name))
-      end
-
-      output_token # int / str / keyword / identifier / start of a subroutine call
-
-      if symbol_token?("[")
-        output_token # [
-        compile_expression
-        output_token # ]
-
-      elsif symbol_token?("(")
-        output_token # (
-        compile_expression_list
-        output_token # )
-
-      elsif symbol_token?(".")
-        output_token # .
-
-        subroutine_name = @tokenizer.identifier
-        output_token # subroutineName
-
-        output_token # (
-        compile_expression_list
-        output_token # )
-
-        @vm_writer.write_call("#{name}.#{subroutine_name}", @expressions_count)
-      end
-    end
+    advance # do
+    @expression_parser.parse_term.write_vm_code(@vm_writer)
+    advance # ;
+    @vm_writer.write_pop(:TEMP, 0)
   end
 
   private
 
   def compile_subroutine_body
-    output_token # {
+    advance # {
 
     while keyword_token?(:VAR)
       compile_var_dec
     end
 
     @vm_writer.write_function("#{@class_name}.#{@subroutine_name}", @symbol_table.var_count(:VAR))
-
     compile_statements
-
-    output_token # }
-  end
-
-  def compile_subroutine_call
-    class_name = @tokenizer.identifier
-    output_token # subroutineName
-
-    if symbol_token?(".")
-      output_token # .
-      subroutine_name = @tokenizer.identifier
-      output_token # subroutineName
-    end
-
-    output_token # (
-    compile_expression_list
-    output_token # )
-    output_token # ;
-
-    @vm_writer.write_call("#{class_name}.#{subroutine_name}", @expressions_count)
-    @vm_writer.write_pop(:TEMP, 0)
+    advance # }
   end
 
   def advance
     @tokenizer.has_more_tokens? && @tokenizer.advance
-  end
-
-  def output_token
-    case tokenizer.token_type
-    when :INT_CONST
-      @vm_writer.write_push(:CONST, tokenizer.int_val)
-    when :KEYWORD
-      token = tokenizer.key_word.downcase.to_s
-      case token
-      when "return"
-        if @subroutine_type == :VOID
-          @vm_writer.write_push(:CONST, 0)
-          @vm_writer.write_return
-        end
-      end
-    end
-
-    advance
   end
 
   def symbol_token?(*symbols)
@@ -351,15 +263,6 @@ class CompilationEngine
       @tokenizer.token_type == :KEYWORD
     else
       @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == keyword
-    end
-  end
-
-  def write_operator(symbol)
-    case symbol
-    when "*"
-      @vm_writer.write_call("Math.multiply", 2)
-    when "+"
-      @vm_writer.write_arithmetic(:ADD)
     end
   end
 end
