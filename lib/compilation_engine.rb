@@ -11,6 +11,8 @@ class CompilationEngine
     @symbol_table = SymbolTable.new
     @vm_writer = VMWriter.new(output)
     @expression_parser = ExpressionParser.new(@tokenizer, @symbol_table)
+
+    @if_count = 0
   end
 
   attr_reader :tokenizer
@@ -192,22 +194,31 @@ class CompilationEngine
   end
 
   def compile_if
+    if_count = @if_count
+    @if_count += 1
     advance # if
 
     advance # (
     compile_expression
     advance # )
 
+    @vm_writer.write_if("IF_TRUE#{if_count}")
+    @vm_writer.write_goto("IF_FALSE#{if_count}")
+    @vm_writer.write_label("IF_TRUE#{if_count}")
     advance # {
     compile_statements
     advance # }
 
     if keyword_token?(:ELSE)
+      @vm_writer.write_goto("IF_END#{if_count}")
+      @vm_writer.write_label("IF_FALSE#{if_count}")
       advance # else
       advance # {
       compile_statements
       advance # }
     end
+
+    @vm_writer.write_label("IF_END#{if_count}")
   end
 
   def compile_expression
