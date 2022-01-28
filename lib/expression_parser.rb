@@ -54,8 +54,10 @@ SubroutineCall = Struct.new(:class_name, :subroutine_name, :expression_list) do
   end
 end
 
-Variable = Struct.new(:name, :kind, :index) do
+Variable = Struct.new(:name) do
   def write_vm_code(vm_writer, symbol_table)
+    index = symbol_table.index_of(name)
+    kind = symbol_table.kind_of(name)
     vm_kind = kind == :VAR ? :LOCAL : :ARG
     vm_writer.write_push(vm_kind, index)
   end
@@ -114,9 +116,7 @@ class ExpressionParser
       name = @tokenizer.identifier
 
       unless @symbol_table.kind_of(name) == :NONE
-        index = @symbol_table.index_of(name)
-        kind = @symbol_table.kind_of(name)
-        ast = Variable.new(name, kind, index)
+        ast = Variable.new(name)
         advance
 
       else
