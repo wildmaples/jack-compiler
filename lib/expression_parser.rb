@@ -66,9 +66,8 @@ end
 OP_SYMBOLS = %w[+ - * / & | < > =]
 
 class ExpressionParser
-  def initialize(tokenizer, symbol_table)
+  def initialize(tokenizer)
     @tokenizer = tokenizer
-    @symbol_table = symbol_table
   end
 
   def parse_expression

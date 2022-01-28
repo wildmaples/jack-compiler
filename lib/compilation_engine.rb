@@ -10,7 +10,7 @@ class CompilationEngine
     @tokenizer = tokenizer
     @symbol_table = SymbolTable.new
     @vm_writer = VMWriter.new(output)
-    @expression_parser = ExpressionParser.new(@tokenizer, @symbol_table)
+    @expression_parser = ExpressionParser.new(@tokenizer)
 
     @while_count = 0
     @if_count = 0
