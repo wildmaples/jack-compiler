@@ -114,24 +114,19 @@ class ExpressionParser
       end
     when :IDENTIFIER
       name = @tokenizer.identifier
+      advance
 
-      unless @symbol_table.kind_of(name) == :NONE
-        ast = Variable.new(name)
+      if symbol_token?(".")
+        advance
+        subroutine_name = @tokenizer.identifier
         advance
 
+        advance
+        list = parse_expression_list
+        advance
+        ast = SubroutineCall.new(name, subroutine_name, list)
       else
-        advance
-
-        if symbol_token?(".")
-          advance
-          subroutine_name = @tokenizer.identifier
-          advance
-
-          advance
-          list = parse_expression_list
-          advance
-          ast = SubroutineCall.new(name, subroutine_name, list)
-        end
+        ast = Variable.new(name)
       end
     end
 
