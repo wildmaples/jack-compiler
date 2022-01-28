@@ -13,3 +13,59 @@ call Main.convert 1
 pop temp 0
 push constant 0
 return
+function Main.convert 3
+push constant 0
+not
+pop local 2
+label WHILE_COND0
+push local 2
+if-goto WHILE_TRUE0
+goto WHILE_END0
+label WHILE_TRUE0
+push local 1
+push constant 1
+add
+pop local 1
+push local 0
+call Main.nextMask 1
+pop local 0
+push local 1
+push constant 16
+gt
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 0
+push local 0
+and
+push constant 0
+eq
+not
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 8000
+push local 1
+add
+push constant 1
+call Memory.poke 2
+pop temp 0
+goto IF_END1
+label IF_FALSE1
+push constant 8000
+push local 1
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+label IF_END1
+goto IF_END0
+label IF_FALSE0
+push constant 0
+pop local 2
+label IF_END0
+goto WHILE_COND0
+label WHILE_END0
+push constant 0
+return

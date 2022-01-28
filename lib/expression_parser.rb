@@ -8,6 +8,14 @@ ArithmeticOp = Struct.new(:operator, :left, :right) do
       vm_writer.write_arithmetic(:ADD)
     when "*"
       vm_writer.write_call("Math.multiply", 2)
+    when ">"
+      vm_writer.write_arithmetic(:GT)
+    when "="
+      vm_writer.write_arithmetic(:EQ)
+    when "&"
+      vm_writer.write_arithmetic(:AND)
+    when "-"
+      vm_writer.write_arithmetic(:SUB)
     end
   end
 end
@@ -15,6 +23,13 @@ end
 Number = Struct.new(:value) do
   def write_vm_code(vm_writer)
     vm_writer.write_push(:CONST, value)
+  end
+end
+
+Boolean = Struct.new(:value) do
+  def write_vm_code(vm_writer)
+    vm_writer.write_push(:CONST, 0)
+    vm_writer.write_arithmetic(:NOT) if value == :TRUE
   end
 end
 
@@ -39,9 +54,10 @@ SubroutineCall = Struct.new(:class_name, :subroutine_name, :expression_list) do
   end
 end
 
-LocalVariable = Struct.new(:name, :index) do
+Variable = Struct.new(:name, :kind, :index) do
   def write_vm_code(vm_writer)
-    vm_writer.write_push(:LOCAL, index)
+    vm_kind = kind == :VAR ? :LOCAL : :ARG
+    vm_writer.write_push(vm_kind, index)
   end
 end
 
@@ -73,6 +89,14 @@ class ExpressionParser
       ast = Number.new(@tokenizer.int_val)
       advance
 
+    when :KEYWORD
+      keyword = @tokenizer.key_word
+
+      if [:TRUE, :FALSE].include?(keyword)
+        ast = Boolean.new(keyword)
+        advance
+      end
+
     when :SYMBOL
       symbol = @tokenizer.symbol
 
@@ -91,7 +115,8 @@ class ExpressionParser
 
       unless @symbol_table.kind_of(name) == :NONE
         index = @symbol_table.index_of(name)
-        ast = LocalVariable.new(name, index)
+        kind = @symbol_table.kind_of(name)
+        ast = Variable.new(name, kind, index)
         advance
 
       else

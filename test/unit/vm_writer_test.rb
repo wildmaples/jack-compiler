@@ -37,6 +37,21 @@ class VMWriterTest < Minitest::Test
     assert_equal("pop argument 10\n", @output.string)
   end
 
+  def test_write_label
+    @vm_writer.write_label("WHILE_COND0")
+    assert_equal("label WHILE_COND0\n", @output.string)
+  end
+
+  def test_write_goto
+    @vm_writer.write_goto("WHILE_COND0")
+    assert_equal("goto WHILE_COND0\n", @output.string)
+  end
+
+  def test_write_if
+    @vm_writer.write_if("WHILE_COND0")
+    assert_equal("if-goto WHILE_COND0\n", @output.string)
+  end
+
   def test_write_return
     @vm_writer.write_return
     assert_equal("return\n", @output.string)

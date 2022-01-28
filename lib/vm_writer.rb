@@ -34,6 +34,18 @@ class VMWriter
     @output.puts command.to_s.downcase
   end
 
+  def write_label(label)
+    @output.puts "label #{label}"
+  end
+
+  def write_goto(label)
+    @output.puts "goto #{label}"
+  end
+
+  def write_if(label)
+    @output.puts "if-goto #{label}"
+  end
+
   def write_return
     @output.puts "return"
   end

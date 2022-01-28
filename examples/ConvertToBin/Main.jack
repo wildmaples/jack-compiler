@@ -31,4 +31,31 @@ class Main {
         do Main.convert(value);           // performs the conversion
         return;
     }
+
+    /** Converts the given decimal value to binary, and puts
+     *  the resulting bits in RAM[8001]..RAM[8016]. */
+    function void convert(int value) {
+    	var int mask, position;
+    	var boolean loop;
+
+    	let loop = true;
+    	while (loop) {
+    	    let position = position + 1;
+    	    let mask = Main.nextMask(mask);
+
+    	    if (~(position > 16)) {
+
+    	        if (~((value & mask) = 0)) {
+    	            do Memory.poke(8000 + position, 1);
+       	        }
+    	        else {
+    	            do Memory.poke(8000 + position, 0);
+      	        }
+    	    }
+    	    else {
+    	        let loop = false;
+    	    }
+    	}
+    	return;
+    }
 }
