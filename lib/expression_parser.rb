@@ -1,7 +1,7 @@
 ArithmeticOp = Struct.new(:operator, :left, :right) do
-  def write_vm_code(vm_writer)
-    left.write_vm_code(vm_writer)
-    right.write_vm_code(vm_writer)
+  def write_vm_code(vm_writer, symbol_table)
+    left.write_vm_code(vm_writer, symbol_table)
+    right.write_vm_code(vm_writer, symbol_table)
 
     case operator
     when "+"
@@ -21,21 +21,21 @@ ArithmeticOp = Struct.new(:operator, :left, :right) do
 end
 
 Number = Struct.new(:value) do
-  def write_vm_code(vm_writer)
+  def write_vm_code(vm_writer, symbol_table)
     vm_writer.write_push(:CONST, value)
   end
 end
 
 Boolean = Struct.new(:value) do
-  def write_vm_code(vm_writer)
+  def write_vm_code(vm_writer, symbol_table)
     vm_writer.write_push(:CONST, 0)
     vm_writer.write_arithmetic(:NOT) if value == :TRUE
   end
 end
 
 UnaryOp = Struct.new(:operator, :operand) do
-  def write_vm_code(vm_writer)
-    operand.write_vm_code(vm_writer)
+  def write_vm_code(vm_writer, symbol_table)
+    operand.write_vm_code(vm_writer, symbol_table)
     case operator
     when "-"
       vm_writer.write_arithmetic(:NEG)
@@ -46,16 +46,18 @@ UnaryOp = Struct.new(:operator, :operand) do
 end
 
 SubroutineCall = Struct.new(:class_name, :subroutine_name, :expression_list) do
-  def write_vm_code(vm_writer)
+  def write_vm_code(vm_writer, symbol_table)
     expression_list.each do |expression|
-      expression.write_vm_code(vm_writer)
+      expression.write_vm_code(vm_writer, symbol_table)
     end
     vm_writer.write_call("#{class_name}.#{subroutine_name}", expression_list.length)
   end
 end
 
-Variable = Struct.new(:name, :kind, :index) do
-  def write_vm_code(vm_writer)
+Variable = Struct.new(:name) do
+  def write_vm_code(vm_writer, symbol_table)
+    index = symbol_table.index_of(name)
+    kind = symbol_table.kind_of(name)
     vm_kind = kind == :VAR ? :LOCAL : :ARG
     vm_writer.write_push(vm_kind, index)
   end
@@ -64,9 +66,8 @@ end
 OP_SYMBOLS = %w[+ - * / & | < > =]
 
 class ExpressionParser
-  def initialize(tokenizer, symbol_table)
+  def initialize(tokenizer)
     @tokenizer = tokenizer
-    @symbol_table = symbol_table
   end
 
   def parse_expression
@@ -112,26 +113,19 @@ class ExpressionParser
       end
     when :IDENTIFIER
       name = @tokenizer.identifier
+      advance
 
-      unless @symbol_table.kind_of(name) == :NONE
-        index = @symbol_table.index_of(name)
-        kind = @symbol_table.kind_of(name)
-        ast = Variable.new(name, kind, index)
+      if symbol_token?(".")
+        advance
+        subroutine_name = @tokenizer.identifier
         advance
 
+        advance
+        list = parse_expression_list
+        advance
+        ast = SubroutineCall.new(name, subroutine_name, list)
       else
-        advance
-
-        if symbol_token?(".")
-          advance
-          subroutine_name = @tokenizer.identifier
-          advance
-
-          advance
-          list = parse_expression_list
-          advance
-          ast = SubroutineCall.new(name, subroutine_name, list)
-        end
+        ast = Variable.new(name)
       end
     end
 

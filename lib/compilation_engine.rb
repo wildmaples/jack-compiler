@@ -10,7 +10,7 @@ class CompilationEngine
     @tokenizer = tokenizer
     @symbol_table = SymbolTable.new
     @vm_writer = VMWriter.new(output)
-    @expression_parser = ExpressionParser.new(@tokenizer, @symbol_table)
+    @expression_parser = ExpressionParser.new(@tokenizer)
 
     @while_count = 0
     @if_count = 0
@@ -235,7 +235,7 @@ class CompilationEngine
 
   def compile_expression
     ast = @expression_parser.parse_expression
-    ast.write_vm_code(@vm_writer)
+    ast.write_vm_code(@vm_writer, @symbol_table)
   end
 
   def compile_expression_list
@@ -254,7 +254,7 @@ class CompilationEngine
 
   def compile_do
     advance # do
-    @expression_parser.parse_term.write_vm_code(@vm_writer)
+    @expression_parser.parse_term.write_vm_code(@vm_writer, @symbol_table)
     advance # ;
     @vm_writer.write_pop(:TEMP, 0)
   end
