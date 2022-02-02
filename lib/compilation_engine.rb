@@ -151,14 +151,15 @@ class CompilationEngine
   end
 
   def compile_return
-    @vm_writer.write_push(:CONST, 0)
-    @vm_writer.write_return
     advance
 
-    unless symbol_token?(";")
+    if symbol_token?(";")
+      @vm_writer.write_push(:CONST, 0)
+    else
       compile_expression
     end
 
+    @vm_writer.write_return
     advance # ;
   end
 
