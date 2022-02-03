@@ -69,3 +69,43 @@ goto WHILE_COND0
 label WHILE_END0
 push constant 0
 return
+function Main.nextMask 0
+push argument 0
+push constant 0
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 1
+return
+goto IF_END2
+label IF_FALSE2
+push argument 0
+push constant 2
+call Math.multiply 2
+return
+label IF_END2
+function Main.fillMemory 0
+label WHILE_COND1
+push argument 1
+push constant 0
+gt
+if-goto WHILE_TRUE1
+goto WHILE_END1
+label WHILE_TRUE1
+push argument 0
+push argument 2
+call Memory.poke 2
+pop temp 0
+push argument 1
+push constant 1
+sub
+pop argument 1
+push argument 0
+push constant 1
+add
+pop argument 0
+goto WHILE_COND1
+label WHILE_END1
+push constant 0
+return

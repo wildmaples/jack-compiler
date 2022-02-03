@@ -151,14 +151,15 @@ class CompilationEngine
   end
 
   def compile_return
-    @vm_writer.write_push(:CONST, 0)
-    @vm_writer.write_return
     advance
 
-    unless symbol_token?(";")
+    if symbol_token?(";")
+      @vm_writer.write_push(:CONST, 0)
+    else
       compile_expression
     end
 
+    @vm_writer.write_return
     advance # ;
   end
 
@@ -175,9 +176,10 @@ class CompilationEngine
     end
 
     advance # =
-
     compile_expression # expression
-    @vm_writer.write_pop(:LOCAL, @symbol_table.index_of(variable_name))
+
+    kind = @symbol_table.kind_of(variable_name) == :VAR ? :LOCAL : :ARG
+    @vm_writer.write_pop(kind, @symbol_table.index_of(variable_name))
 
     advance # ;
   end
