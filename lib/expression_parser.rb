@@ -53,10 +53,11 @@ SubroutineCall = Struct.new(:class_name, :subroutine_name, :expression_list) do
 
     name = class_name
     arg_length = expression_list.length
-    kind = symbol_table.kind_of(class_name)
-    if kind != :NONE
+    if symbol_table.defined?(name)
       name = symbol_table.type_of(class_name)
       index = symbol_table.index_of(class_name)
+      kind = symbol_table.kind_of(class_name)
+
       vm_writer.write_push(kind == :VAR ? :LOCAL : :ARG, index)
       arg_length += 1
     end
