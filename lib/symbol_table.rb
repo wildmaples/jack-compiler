@@ -33,7 +33,7 @@ class SymbolTable
     @subroutine_symbol_table = {}
   end
 
-  def defined?(name)
+  def include?(name)
     symbol_table.key?(name)
   end
 
