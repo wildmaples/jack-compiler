@@ -67,7 +67,7 @@ class CompilationEngine
   def compile_subroutine
     @symbol_table.start_subroutine
 
-    _kind = @tokenizer.key_word
+    kind = @tokenizer.key_word
     advance # constructor / function / method
 
     @subroutine_type = type = keyword_or_identifier
@@ -87,6 +87,12 @@ class CompilationEngine
     end
 
     @vm_writer.write_function("#{@class_name}.#{subroutine_name}", @symbol_table.var_count(:VAR))
+
+    if kind == :CONSTRUCTOR
+      @vm_writer.write_push(:CONST, @symbol_table.var_count(:FIELD))
+      @vm_writer.write_call("Memory.alloc", 1)
+      @vm_writer.write_pop(:POINTER, 0)
+    end
 
     compile_statements
     advance # }
