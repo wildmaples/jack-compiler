@@ -43,7 +43,7 @@ class CompilationEngine
     kind = @tokenizer.key_word
     advance # static / field
 
-    type = @tokenizer.key_word
+    type = keyword_or_identifier
     advance # type
 
     name = @tokenizer.identifier
@@ -70,7 +70,7 @@ class CompilationEngine
     _kind = @tokenizer.key_word
     advance # constructor / function / method
 
-    @subroutine_type = type = @tokenizer.key_word
+    @subroutine_type = type = keyword_or_identifier
     advance # void / type
 
     @subroutine_name = @tokenizer.identifier
@@ -87,7 +87,7 @@ class CompilationEngine
 
     unless symbol_token?(")")
       kind = :ARG
-      type = @tokenizer.key_word
+      type = keyword_or_identifier
       advance # type
 
       name = @tokenizer.identifier
@@ -98,7 +98,7 @@ class CompilationEngine
       while symbol_token?(",")
         advance # ,
 
-        type = @tokenizer.key_word
+        type = keyword_or_identifier
         advance # type
 
         name = @tokenizer.identifier
@@ -113,7 +113,7 @@ class CompilationEngine
     kind = @tokenizer.key_word
     advance # var
 
-    type = @tokenizer.key_word
+    type = keyword_or_identifier
     advance # type
 
     name = @tokenizer.identifier
@@ -288,6 +288,15 @@ class CompilationEngine
       @tokenizer.token_type == :KEYWORD
     else
       @tokenizer.token_type == :KEYWORD && @tokenizer.key_word == keyword
+    end
+  end
+
+  def keyword_or_identifier
+    case @tokenizer.token_type
+    when :KEY_WORD
+      @tokenizer.keyword
+    when :IDENTIFIER
+      @tokenizer.identifier
     end
   end
 end

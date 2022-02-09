@@ -69,4 +69,14 @@ class SymbolTableTest < Minitest::Test
     assert_equal(0, symbol_table.var_count(:ARG))
     assert_equal(2, symbol_table.var_count(:STATIC))
   end
+
+  def test_include?
+    symbol_table = SymbolTable.new
+    symbol_table.define("too", "boolean", :ARG)
+    symbol_table.define("foo", "int", :STATIC)
+
+    assert(symbol_table.include?("foo"))
+    assert(symbol_table.include?("too"))
+    refute(symbol_table.include?("bar"))
+  end
 end
