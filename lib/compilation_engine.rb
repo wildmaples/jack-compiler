@@ -193,8 +193,8 @@ class CompilationEngine
     advance # =
     compile_expression # expression
 
-    kind = @symbol_table.kind_of(variable_name) == :VAR ? :LOCAL : :ARG
-    @vm_writer.write_pop(kind, @symbol_table.index_of(variable_name))
+    kind = @symbol_table.kind_of(variable_name)
+    @vm_writer.write_pop(kind_to_segment(kind), @symbol_table.index_of(variable_name))
 
     advance # ;
   end
@@ -277,6 +277,17 @@ class CompilationEngine
   end
 
   private
+
+  def kind_to_segment(kind)
+    case kind
+    when :VAR
+      :LOCAL
+    when :FIELD
+      :THIS
+    else
+      kind
+    end
+  end
 
   def advance
     @tokenizer.has_more_tokens? && @tokenizer.advance
