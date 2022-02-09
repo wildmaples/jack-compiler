@@ -170,6 +170,8 @@ class CompilationEngine
 
     if symbol_token?(";")
       @vm_writer.write_push(:CONST, 0)
+    elsif keyword_token?(:THIS)
+      @vm_writer.write_push(:POINTER, 0)
     else
       compile_expression
     end
