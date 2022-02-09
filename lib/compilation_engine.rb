@@ -292,9 +292,10 @@ class CompilationEngine
   end
 
   def keyword_or_identifier
-    if @tokenizer.token_type == :KEY_WORD
+    case @tokenizer.token_type
+    when :KEY_WORD
       @tokenizer.keyword
-    elsif @tokenizer.token_type == :IDENTIFIER
+    when :IDENTIFIER
       @tokenizer.identifier
     end
   end
