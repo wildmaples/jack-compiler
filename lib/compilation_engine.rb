@@ -280,7 +280,9 @@ class CompilationEngine
 
   def compile_do
     advance # do
-    ast = @expression_parser.parse_term(@class_name)
+    name = @tokenizer.identifier
+    advance
+    ast = @expression_parser.parse_subroutine(name, @class_name)
     ast.write_vm_code(@vm_writer, @symbol_table)
     advance # ;
     @vm_writer.write_pop(:TEMP, 0)

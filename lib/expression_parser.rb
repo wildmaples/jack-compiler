@@ -136,29 +136,36 @@ class ExpressionParser
       name = @tokenizer.identifier
       advance
 
-      if symbol_token?(".")
-        advance
-        subroutine_name = @tokenizer.identifier
-        advance
-
-        advance
-        list = parse_expression_list
-        advance
-        ast = SubroutineCall.new(:FUNC, name, subroutine_name, list)
-
+      ast = if symbol_token?(".")
+        parse_subroutine(name)
       elsif symbol_token?("(")
-        subroutine_name = name
-        advance
-        list = parse_expression_list
-        advance
-        ast = SubroutineCall.new(:METHOD, class_name, subroutine_name, list)
-
+        parse_subroutine(name, class_name)
       else
-        ast = Variable.new(name)
+        Variable.new(name)
       end
     end
 
     ast
+  end
+
+  def parse_subroutine(name, class_name = nil)
+    if symbol_token?(".")
+      advance
+      subroutine_name = @tokenizer.identifier
+      advance
+
+      advance
+      list = parse_expression_list
+      advance
+      SubroutineCall.new(:FUNC, name, subroutine_name, list)
+
+    elsif symbol_token?("(")
+      subroutine_name = name
+      advance
+      list = parse_expression_list
+      advance
+      SubroutineCall.new(:METHOD, class_name, subroutine_name, list)
+    end
   end
 
   def parse_expression_list
