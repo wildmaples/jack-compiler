@@ -47,10 +47,6 @@ end
 
 SubroutineCall = Struct.new(:class_name, :subroutine_name, :expression_list) do
   def write_vm_code(vm_writer, symbol_table)
-    expression_list.each do |expression|
-      expression.write_vm_code(vm_writer, symbol_table)
-    end
-
     name = class_name
     arg_length = expression_list.length
     if symbol_table.include?(name)
@@ -60,6 +56,10 @@ SubroutineCall = Struct.new(:class_name, :subroutine_name, :expression_list) do
 
       vm_writer.write_push(kind == :VAR ? :LOCAL : :ARG, index)
       arg_length += 1
+    end
+
+    expression_list.each do |expression|
+      expression.write_vm_code(vm_writer, symbol_table)
     end
 
     vm_writer.write_call("#{name}.#{subroutine_name}", arg_length)
