@@ -94,6 +94,9 @@ class CompilationEngine
       @vm_writer.write_push(:CONST, @symbol_table.var_count(:FIELD))
       @vm_writer.write_call("Memory.alloc", 1)
       @vm_writer.write_pop(:POINTER, 0)
+    elsif kind == :METHOD
+      @vm_writer.write_push(:ARG, 0)
+      @vm_writer.write_pop(:POINTER, 0)
     end
 
     compile_statements
