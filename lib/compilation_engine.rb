@@ -3,6 +3,7 @@ require_relative 'jack_tokenizer'
 require_relative 'symbol_table'
 require_relative 'vm_writer'
 require_relative 'expression_parser'
+require_relative 'utils'
 
 class CompilationEngine
   def initialize(input, output, tokenizer: JackTokenizer.new(input))
@@ -202,7 +203,7 @@ class CompilationEngine
     compile_expression # expression
 
     kind = @symbol_table.kind_of(variable_name)
-    @vm_writer.write_pop(kind_to_segment(kind), @symbol_table.index_of(variable_name))
+    @vm_writer.write_pop(Utils.kind_to_segment(kind), @symbol_table.index_of(variable_name))
 
     advance # ;
   end
@@ -286,17 +287,6 @@ class CompilationEngine
   end
 
   private
-
-  def kind_to_segment(kind)
-    case kind
-    when :VAR
-      :LOCAL
-    when :FIELD
-      :THIS
-    else
-      kind
-    end
-  end
 
   def advance
     @tokenizer.has_more_tokens? && @tokenizer.advance

@@ -1,3 +1,5 @@
+require_relative "utils"
+
 ArithmeticOp = Struct.new(:operator, :left, :right) do
   def write_vm_code(vm_writer, symbol_table)
     left.write_vm_code(vm_writer, symbol_table)
@@ -78,18 +80,7 @@ Variable = Struct.new(:name) do
   def write_vm_code(vm_writer, symbol_table)
     index = symbol_table.index_of(name)
     kind = symbol_table.kind_of(name)
-    vm_writer.write_push(kind_to_segment(kind), index)
-  end
-
-  def kind_to_segment(kind)
-    case kind
-    when :VAR
-      :LOCAL
-    when :FIELD
-      :THIS
-    else
-      kind
-    end
+    vm_writer.write_push(Utils.kind_to_segment(kind), index)
   end
 end
 
