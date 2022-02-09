@@ -272,7 +272,8 @@ class CompilationEngine
 
   def compile_do
     advance # do
-    @expression_parser.parse_term.write_vm_code(@vm_writer, @symbol_table)
+    ast = @expression_parser.parse_term(@class_name)
+    ast.write_vm_code(@vm_writer, @symbol_table)
     advance # ;
     @vm_writer.write_pop(:TEMP, 0)
   end
