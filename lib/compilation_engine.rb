@@ -73,14 +73,23 @@ class CompilationEngine
     @subroutine_type = type = keyword_or_identifier
     advance # void / type
 
-    @subroutine_name = @tokenizer.identifier
+    subroutine_name = @tokenizer.identifier
     advance # subroutineName
 
     advance # (
     compile_parameter_list
     advance # )
 
-    compile_subroutine_body
+    advance # {
+
+    while keyword_token?(:VAR)
+      compile_var_dec
+    end
+
+    @vm_writer.write_function("#{@class_name}.#{subroutine_name}", @symbol_table.var_count(:VAR))
+
+    compile_statements
+    advance # }
   end
 
   def compile_parameter_list
@@ -262,18 +271,6 @@ class CompilationEngine
   end
 
   private
-
-  def compile_subroutine_body
-    advance # {
-
-    while keyword_token?(:VAR)
-      compile_var_dec
-    end
-
-    @vm_writer.write_function("#{@class_name}.#{@subroutine_name}", @symbol_table.var_count(:VAR))
-    compile_statements
-    advance # }
-  end
 
   def advance
     @tokenizer.has_more_tokens? && @tokenizer.advance
