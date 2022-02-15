@@ -35,6 +35,16 @@ Boolean = Struct.new(:value) do
   end
 end
 
+KeywordConstant = Struct.new(:value) do
+  def write_vm_code(vm_writer, symbol_table)
+    case value
+    when *[:TRUE, :FALSE]
+      vm_writer.write_push(:CONST, 0)
+      vm_writer.write_arithmetic(:NOT) if value == :TRUE
+    end
+  end
+end
+
 UnaryOp = Struct.new(:operator, :operand) do
   def write_vm_code(vm_writer, symbol_table)
     operand.write_vm_code(vm_writer, symbol_table)
