@@ -13,7 +13,7 @@ call Square.draw 1
 pop temp 0
 push pointer 0
 return
-function Square.draw 1
+function Square.draw 0
 push argument 0
 pop pointer 0
 push constant 0

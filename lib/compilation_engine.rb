@@ -86,10 +86,7 @@ class CompilationEngine
       compile_var_dec
     end
 
-    local_var = @symbol_table.var_count(:VAR)
-    local_var += 1 if kind == :METHOD
-
-    @vm_writer.write_function("#{@class_name}.#{subroutine_name}", local_var)
+    @vm_writer.write_function("#{@class_name}.#{subroutine_name}", @symbol_table.var_count(:VAR))
 
     if kind == :CONSTRUCTOR
       @vm_writer.write_push(:CONST, @symbol_table.var_count(:FIELD))
