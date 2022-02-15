@@ -114,7 +114,8 @@ class ExpressionParser
     when :KEYWORD
       keyword = @tokenizer.key_word
 
-      if [:TRUE, :FALSE].include?(keyword)
+      case keyword
+      when *[:TRUE, :FALSE]
         ast = Boolean.new(keyword)
         advance
       end
