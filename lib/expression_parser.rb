@@ -28,13 +28,6 @@ Number = Struct.new(:value) do
   end
 end
 
-Boolean = Struct.new(:value) do
-  def write_vm_code(vm_writer, symbol_table)
-    vm_writer.write_push(:CONST, 0)
-    vm_writer.write_arithmetic(:NOT) if value == :TRUE
-  end
-end
-
 KeywordConstant = Struct.new(:value) do
   def write_vm_code(vm_writer, symbol_table)
     case value
@@ -122,13 +115,8 @@ class ExpressionParser
       advance
 
     when :KEYWORD
-      keyword = @tokenizer.key_word
-
-      case keyword
-      when *[:TRUE, :FALSE]
-        ast = Boolean.new(keyword)
-        advance
-      end
+      ast = KeywordConstant.new(@tokenizer.key_word)
+      advance
 
     when :SYMBOL
       symbol = @tokenizer.symbol
