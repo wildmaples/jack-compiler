@@ -244,9 +244,9 @@ class CompilationEngine
     compile_statements
     advance # }
 
+    @vm_writer.write_goto("IF_END#{if_count}")
+    @vm_writer.write_label("IF_FALSE#{if_count}")
     if keyword_token?(:ELSE)
-      @vm_writer.write_goto("IF_END#{if_count}")
-      @vm_writer.write_label("IF_FALSE#{if_count}")
       advance # else
       advance # {
       compile_statements
