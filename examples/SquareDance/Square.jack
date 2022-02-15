@@ -32,4 +32,11 @@ class Square {
       do Screen.drawRectangle(x, y, x + size, y + size);
       return;
    }
+
+   /** Erases the square from the screen. */
+   method void erase() {
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      return;
+   }
 }
