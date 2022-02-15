@@ -12,6 +12,8 @@ ArithmeticOp = Struct.new(:operator, :left, :right) do
       vm_writer.write_call("Math.multiply", 2)
     when ">"
       vm_writer.write_arithmetic(:GT)
+    when "<"
+      vm_writer.write_arithmetic(:LT)
     when "="
       vm_writer.write_arithmetic(:EQ)
     when "&"
