@@ -1,3 +1,5 @@
+require_relative "utils"
+
 ArithmeticOp = Struct.new(:operator, :left, :right) do
   def write_vm_code(vm_writer, symbol_table)
     left.write_vm_code(vm_writer, symbol_table)
@@ -45,14 +47,12 @@ UnaryOp = Struct.new(:operator, :operand) do
   end
 end
 
-SubroutineCall = Struct.new(:class_name, :subroutine_name, :expression_list) do
+SubroutineCall = Struct.new(:type, :class_name, :subroutine_name, :expression_list) do
   def write_vm_code(vm_writer, symbol_table)
-    expression_list.each do |expression|
-      expression.write_vm_code(vm_writer, symbol_table)
-    end
-
     name = class_name
     arg_length = expression_list.length
+
+    # Push receiver
     if symbol_table.include?(name)
       name = symbol_table.type_of(class_name)
       index = symbol_table.index_of(class_name)
@@ -60,6 +60,16 @@ SubroutineCall = Struct.new(:class_name, :subroutine_name, :expression_list) do
 
       vm_writer.write_push(kind == :VAR ? :LOCAL : :ARG, index)
       arg_length += 1
+
+    # Push self
+    elsif type == :METHOD
+      vm_writer.write_push(:POINTER, 0)
+      arg_length += 1
+    end
+
+    # Push arguments
+    expression_list.each do |expression|
+      expression.write_vm_code(vm_writer, symbol_table)
     end
 
     vm_writer.write_call("#{name}.#{subroutine_name}", arg_length)
@@ -70,8 +80,7 @@ Variable = Struct.new(:name) do
   def write_vm_code(vm_writer, symbol_table)
     index = symbol_table.index_of(name)
     kind = symbol_table.kind_of(name)
-    vm_kind = kind == :VAR ? :LOCAL : :ARG
-    vm_writer.write_push(vm_kind, index)
+    vm_writer.write_push(Utils.kind_to_segment(kind), index)
   end
 end
 
@@ -96,7 +105,7 @@ class ExpressionParser
     end
   end
 
-  def parse_term
+  def parse_term(class_name = nil)
     case @tokenizer.token_type
     when :INT_CONST
       ast = Number.new(@tokenizer.int_val)
@@ -127,21 +136,36 @@ class ExpressionParser
       name = @tokenizer.identifier
       advance
 
-      if symbol_token?(".")
-        advance
-        subroutine_name = @tokenizer.identifier
-        advance
-
-        advance
-        list = parse_expression_list
-        advance
-        ast = SubroutineCall.new(name, subroutine_name, list)
+      ast = if symbol_token?(".")
+        parse_subroutine(name)
+      elsif symbol_token?("(")
+        parse_subroutine(name, class_name)
       else
-        ast = Variable.new(name)
+        Variable.new(name)
       end
     end
 
     ast
+  end
+
+  def parse_subroutine(name, class_name = nil)
+    if symbol_token?(".")
+      advance
+      subroutine_name = @tokenizer.identifier
+      advance
+
+      advance
+      list = parse_expression_list
+      advance
+      SubroutineCall.new(:FUNC, name, subroutine_name, list)
+
+    elsif symbol_token?("(")
+      subroutine_name = name
+      advance
+      list = parse_expression_list
+      advance
+      SubroutineCall.new(:METHOD, class_name, subroutine_name, list)
+    end
   end
 
   def parse_expression_list

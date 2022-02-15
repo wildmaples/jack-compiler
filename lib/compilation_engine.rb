@@ -3,6 +3,7 @@ require_relative 'jack_tokenizer'
 require_relative 'symbol_table'
 require_relative 'vm_writer'
 require_relative 'expression_parser'
+require_relative 'utils'
 
 class CompilationEngine
   def initialize(input, output, tokenizer: JackTokenizer.new(input))
@@ -58,7 +59,6 @@ class CompilationEngine
       advance # varName
 
       @symbol_table.define(name, type, kind)
-      @output.puts("(#{@symbol_table.kind_of(name)}, defined, true, #{@symbol_table.index_of(name)})")
     end
 
     advance # ;
@@ -67,20 +67,38 @@ class CompilationEngine
   def compile_subroutine
     @symbol_table.start_subroutine
 
-    _kind = @tokenizer.key_word
+    kind = @tokenizer.key_word
     advance # constructor / function / method
 
     @subroutine_type = type = keyword_or_identifier
     advance # void / type
 
-    @subroutine_name = @tokenizer.identifier
+    subroutine_name = @tokenizer.identifier
     advance # subroutineName
 
     advance # (
     compile_parameter_list
     advance # )
 
-    compile_subroutine_body
+    advance # {
+
+    while keyword_token?(:VAR)
+      compile_var_dec
+    end
+
+    @vm_writer.write_function("#{@class_name}.#{subroutine_name}", @symbol_table.var_count(:VAR))
+
+    if kind == :CONSTRUCTOR
+      @vm_writer.write_push(:CONST, @symbol_table.var_count(:FIELD))
+      @vm_writer.write_call("Memory.alloc", 1)
+      @vm_writer.write_pop(:POINTER, 0)
+    elsif kind == :METHOD
+      @vm_writer.write_push(:ARG, 0)
+      @vm_writer.write_pop(:POINTER, 0)
+    end
+
+    compile_statements
+    advance # }
   end
 
   def compile_parameter_list
@@ -155,6 +173,9 @@ class CompilationEngine
 
     if symbol_token?(";")
       @vm_writer.write_push(:CONST, 0)
+    elsif keyword_token?(:THIS)
+      @vm_writer.write_push(:POINTER, 0)
+      advance
     else
       compile_expression
     end
@@ -178,8 +199,8 @@ class CompilationEngine
     advance # =
     compile_expression # expression
 
-    kind = @symbol_table.kind_of(variable_name) == :VAR ? :LOCAL : :ARG
-    @vm_writer.write_pop(kind, @symbol_table.index_of(variable_name))
+    kind = @symbol_table.kind_of(variable_name)
+    @vm_writer.write_pop(Utils.kind_to_segment(kind), @symbol_table.index_of(variable_name))
 
     advance # ;
   end
@@ -256,24 +277,15 @@ class CompilationEngine
 
   def compile_do
     advance # do
-    @expression_parser.parse_term.write_vm_code(@vm_writer, @symbol_table)
+    name = @tokenizer.identifier
+    advance
+    ast = @expression_parser.parse_subroutine(name, @class_name)
+    ast.write_vm_code(@vm_writer, @symbol_table)
     advance # ;
     @vm_writer.write_pop(:TEMP, 0)
   end
 
   private
-
-  def compile_subroutine_body
-    advance # {
-
-    while keyword_token?(:VAR)
-      compile_var_dec
-    end
-
-    @vm_writer.write_function("#{@class_name}.#{@subroutine_name}", @symbol_table.var_count(:VAR))
-    compile_statements
-    advance # }
-  end
 
   def advance
     @tokenizer.has_more_tokens? && @tokenizer.advance
