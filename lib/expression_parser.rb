@@ -33,7 +33,7 @@ end
 KeywordConstant = Struct.new(:value) do
   def write_vm_code(vm_writer, symbol_table)
     case value
-    when *[:TRUE, :FALSE]
+    when :TRUE, :FALSE
       vm_writer.write_push(:CONST, 0)
       vm_writer.write_arithmetic(:NOT) if value == :TRUE
     when :THIS
