@@ -12,6 +12,8 @@ ArithmeticOp = Struct.new(:operator, :left, :right) do
       vm_writer.write_call("Math.multiply", 2)
     when ">"
       vm_writer.write_arithmetic(:GT)
+    when "<"
+      vm_writer.write_arithmetic(:LT)
     when "="
       vm_writer.write_arithmetic(:EQ)
     when "&"
@@ -28,10 +30,15 @@ Number = Struct.new(:value) do
   end
 end
 
-Boolean = Struct.new(:value) do
+KeywordConstant = Struct.new(:value) do
   def write_vm_code(vm_writer, symbol_table)
-    vm_writer.write_push(:CONST, 0)
-    vm_writer.write_arithmetic(:NOT) if value == :TRUE
+    case value
+    when :TRUE, :FALSE
+      vm_writer.write_push(:CONST, 0)
+      vm_writer.write_arithmetic(:NOT) if value == :TRUE
+    when :THIS
+      vm_writer.write_push(:POINTER, 0)
+    end
   end
 end
 
@@ -112,12 +119,8 @@ class ExpressionParser
       advance
 
     when :KEYWORD
-      keyword = @tokenizer.key_word
-
-      if [:TRUE, :FALSE].include?(keyword)
-        ast = Boolean.new(keyword)
-        advance
-      end
+      ast = KeywordConstant.new(@tokenizer.key_word)
+      advance
 
     when :SYMBOL
       symbol = @tokenizer.symbol
