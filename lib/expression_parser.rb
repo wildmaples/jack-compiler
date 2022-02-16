@@ -65,7 +65,7 @@ SubroutineCall = Struct.new(:type, :class_name, :subroutine_name, :expression_li
       index = symbol_table.index_of(class_name)
       kind = symbol_table.kind_of(class_name)
 
-      vm_writer.write_push(kind == :VAR ? :LOCAL : :ARG, index)
+      vm_writer.write_push(Utils.kind_to_segment(kind), index)
       arg_length += 1
 
     # Push self
