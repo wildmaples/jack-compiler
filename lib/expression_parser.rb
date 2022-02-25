@@ -96,8 +96,8 @@ StringConst = Struct.new(:value) do
     vm_writer.write_push(:CONST, value.length)
     vm_writer.write_call("String.new", 1)
 
-    value.bytes.each do |byte|
-      vm_writer.write_push(:CONST, byte)
+    value.each_char do |char|
+      vm_writer.write_push(:CONST, char.ord)
       vm_writer.write_call("String.appendChar", 2)
     end
   end
