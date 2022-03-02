@@ -188,6 +188,8 @@ class CompilationEngine
     advance # let
 
     variable_name = @tokenizer.identifier
+    segment = Utils.kind_to_segment(@symbol_table.kind_of(variable_name))
+    index = @symbol_table.index_of(variable_name)
     advance # varName
 
     if symbol_token?("[")
@@ -198,8 +200,7 @@ class CompilationEngine
       compile_expression # expression
       array_index.write_vm_code(@vm_writer, @symbol_table)
 
-      kind = @symbol_table.kind_of(variable_name)
-      @vm_writer.write_push(Utils.kind_to_segment(kind), @symbol_table.index_of(variable_name))
+      @vm_writer.write_push(segment, index)
       @vm_writer.write_arithmetic(:ADD)
       @vm_writer.write_pop(:POINTER, 1)
       @vm_writer.write_pop(:THAT, 0)
@@ -208,8 +209,7 @@ class CompilationEngine
       advance # =
       compile_expression # expression
 
-      kind = @symbol_table.kind_of(variable_name)
-      @vm_writer.write_pop(Utils.kind_to_segment(kind), @symbol_table.index_of(variable_name))
+      @vm_writer.write_pop(segment, index)
     end
 
     advance # ;
