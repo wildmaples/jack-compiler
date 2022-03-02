@@ -192,15 +192,25 @@ class CompilationEngine
 
     if symbol_token?("[")
       advance # [
-      compile_expression
+      array_index = @expression_parser.parse_expression
       advance # ]
+      advance # =
+      compile_expression # expression
+      array_index.write_vm_code(@vm_writer, @symbol_table)
+
+      kind = @symbol_table.kind_of(variable_name)
+      @vm_writer.write_push(Utils.kind_to_segment(kind), @symbol_table.index_of(variable_name))
+      @vm_writer.write_arithmetic(:ADD)
+      @vm_writer.write_pop(:POINTER, 1)
+      @vm_writer.write_pop(:THAT, 0)
+
+    else
+      advance # =
+      compile_expression # expression
+
+      kind = @symbol_table.kind_of(variable_name)
+      @vm_writer.write_pop(Utils.kind_to_segment(kind), @symbol_table.index_of(variable_name))
     end
-
-    advance # =
-    compile_expression # expression
-
-    kind = @symbol_table.kind_of(variable_name)
-    @vm_writer.write_pop(Utils.kind_to_segment(kind), @symbol_table.index_of(variable_name))
 
     advance # ;
   end
