@@ -91,6 +91,18 @@ Variable = Struct.new(:name) do
   end
 end
 
+StringConst = Struct.new(:value) do
+  def write_vm_code(vm_writer, symbol_table)
+    vm_writer.write_push(:CONST, value.length)
+    vm_writer.write_call("String.new", 1)
+
+    value.each_char do |char|
+      vm_writer.write_push(:CONST, char.ord)
+      vm_writer.write_call("String.appendChar", 2)
+    end
+  end
+end
+
 OP_SYMBOLS = %w[+ - * / & | < > =]
 
 class ExpressionParser
@@ -146,6 +158,9 @@ class ExpressionParser
       else
         Variable.new(name)
       end
+    when :STRING_CONST
+      ast = StringConst.new(@tokenizer.string_val)
+      advance
     end
 
     ast
