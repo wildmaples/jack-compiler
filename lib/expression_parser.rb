@@ -105,6 +105,20 @@ StringConst = Struct.new(:value) do
   end
 end
 
+ArrayIndex = Struct.new(:name, :expression) do
+  def write_vm_code(vm_writer, symbol_table)
+    kind = symbol_table.kind_of(name)
+    index = symbol_table.index_of(name)
+
+    expression.write_vm_code(vm_writer, symbol_table)
+
+    vm_writer.write_push(Utils.kind_to_segment(kind), index)
+    vm_writer.write_arithmetic(:ADD)
+    vm_writer.write_pop(:POINTER, 1)
+    vm_writer.write_push(:THAT, 0)
+  end
+end
+
 OP_SYMBOLS = %w[+ - * / & | < > =]
 
 class ExpressionParser
@@ -157,6 +171,11 @@ class ExpressionParser
         parse_subroutine(name)
       elsif symbol_token?("(")
         parse_subroutine(name, class_name)
+      elsif symbol_token?("[")
+        advance
+        expression = parse_expression
+        advance
+        ArrayIndex.new(name, expression)
       else
         Variable.new(name)
       end
