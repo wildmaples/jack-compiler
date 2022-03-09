@@ -66,7 +66,7 @@ SubroutineCall = Struct.new(:type, :class_name, :subroutine_name, :expression_li
     # Push receiver
     if symbol_table.include?(name)
       name = symbol_table.type_of(class_name)
-      index = symbol_table.index_of(class_name)
+      index = Utils.adjusted_index(class_name, symbol_table, subroutine_kind)
       kind = symbol_table.kind_of(class_name)
 
       vm_writer.write_push(Utils.kind_to_segment(kind), index)
@@ -89,7 +89,7 @@ end
 
 Variable = Struct.new(:name) do
   def write_vm_code(vm_writer, symbol_table, subroutine_kind)
-    index = symbol_table.index_of(name)
+    index = Utils.adjusted_index(name, symbol_table, subroutine_kind)
     kind = symbol_table.kind_of(name)
     vm_writer.write_push(Utils.kind_to_segment(kind), index)
   end
@@ -110,7 +110,7 @@ end
 ArrayIndex = Struct.new(:name, :expression) do
   def write_vm_code(vm_writer, symbol_table, subroutine_kind)
     kind = symbol_table.kind_of(name)
-    index = symbol_table.index_of(name)
+    index = Utils.adjusted_index(name, symbol_table, subroutine_kind)
 
     expression.write_vm_code(vm_writer, symbol_table, subroutine_kind)
 
