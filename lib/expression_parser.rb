@@ -22,6 +22,8 @@ ArithmeticOp = Struct.new(:operator, :left, :right) do
       vm_writer.write_arithmetic(:SUB)
     when "/"
       vm_writer.write_call("Math.divide", 2)
+    when "|"
+      vm_writer.write_arithmetic(:OR)
     end
   end
 end
