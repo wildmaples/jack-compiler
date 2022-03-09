@@ -191,8 +191,7 @@ class CompilationEngine
     kind = @symbol_table.kind_of(variable_name)
     segment = Utils.kind_to_segment(kind)
     index = @symbol_table.index_of(variable_name)
-
-    index += 1 if @subroutine_type == :METHOD && kind == :ARG
+    index += 1 if @subroutine_kind == :METHOD && kind == :ARG
 
     advance # varName
 
