@@ -67,7 +67,7 @@ class CompilationEngine
   def compile_subroutine
     @symbol_table.start_subroutine
 
-    kind = @tokenizer.key_word
+    @subroutine_kind = kind = get_subroutine_kind
     advance # constructor / function / method
 
     @subroutine_type = type = keyword_or_identifier
@@ -206,8 +206,7 @@ class CompilationEngine
     compile_expression # expression
 
     if array_index
-      array_index.write_vm_code(@vm_writer, @symbol_table)
-
+      array_index.write_vm_code(@vm_writer, @symbol_table, @subroutine_kind)
       @vm_writer.write_push(segment, index)
       @vm_writer.write_arithmetic(:ADD)
       @vm_writer.write_pop(:POINTER, 1)
@@ -272,7 +271,7 @@ class CompilationEngine
 
   def compile_expression
     ast = @expression_parser.parse_expression
-    ast.write_vm_code(@vm_writer, @symbol_table)
+    ast.write_vm_code(@vm_writer, @symbol_table, @subroutine_kind)
   end
 
   def compile_expression_list
@@ -294,7 +293,7 @@ class CompilationEngine
     name = @tokenizer.identifier
     advance
     ast = @expression_parser.parse_subroutine(name, @class_name)
-    ast.write_vm_code(@vm_writer, @symbol_table)
+    ast.write_vm_code(@vm_writer, @symbol_table, @subroutine_kind)
     advance # ;
     @vm_writer.write_pop(:TEMP, 0)
   end
@@ -324,5 +323,9 @@ class CompilationEngine
     when :IDENTIFIER
       @tokenizer.identifier
     end
+  end
+
+  def get_subroutine_kind
+    @tokenizer.key_word if @tokenizer.token_type == :KEYWORD
   end
 end
