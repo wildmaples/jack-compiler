@@ -188,8 +188,12 @@ class CompilationEngine
     advance # let
 
     variable_name = @tokenizer.identifier
-    segment = Utils.kind_to_segment(@symbol_table.kind_of(variable_name))
+    kind = @symbol_table.kind_of(variable_name)
+    segment = Utils.kind_to_segment(kind)
     index = @symbol_table.index_of(variable_name)
+
+    index += 1 if @subroutine_type == :METHOD && kind == :ARG
+
     advance # varName
 
     if symbol_token?("[")
