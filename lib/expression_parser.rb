@@ -1,9 +1,9 @@
 require_relative "utils"
 
 ArithmeticOp = Struct.new(:operator, :left, :right) do
-  def write_vm_code(vm_writer, symbol_table)
-    left.write_vm_code(vm_writer, symbol_table)
-    right.write_vm_code(vm_writer, symbol_table)
+  def write_vm_code(vm_writer, symbol_table, subroutine_kind)
+    left.write_vm_code(vm_writer, symbol_table, subroutine_kind)
+    right.write_vm_code(vm_writer, symbol_table, subroutine_kind)
 
     case operator
     when "+"
@@ -22,18 +22,20 @@ ArithmeticOp = Struct.new(:operator, :left, :right) do
       vm_writer.write_arithmetic(:SUB)
     when "/"
       vm_writer.write_call("Math.divide", 2)
+    when "|"
+      vm_writer.write_arithmetic(:OR)
     end
   end
 end
 
 Number = Struct.new(:value) do
-  def write_vm_code(vm_writer, symbol_table)
+  def write_vm_code(vm_writer, symbol_table, subroutine_kind)
     vm_writer.write_push(:CONST, value)
   end
 end
 
 KeywordConstant = Struct.new(:value) do
-  def write_vm_code(vm_writer, symbol_table)
+  def write_vm_code(vm_writer, symbol_table, subroutine_kind)
     case value
     when :TRUE, :FALSE
       vm_writer.write_push(:CONST, 0)
@@ -45,8 +47,8 @@ KeywordConstant = Struct.new(:value) do
 end
 
 UnaryOp = Struct.new(:operator, :operand) do
-  def write_vm_code(vm_writer, symbol_table)
-    operand.write_vm_code(vm_writer, symbol_table)
+  def write_vm_code(vm_writer, symbol_table, subroutine_kind)
+    operand.write_vm_code(vm_writer, symbol_table, subroutine_kind)
     case operator
     when "-"
       vm_writer.write_arithmetic(:NEG)
@@ -57,14 +59,14 @@ UnaryOp = Struct.new(:operator, :operand) do
 end
 
 SubroutineCall = Struct.new(:type, :class_name, :subroutine_name, :expression_list) do
-  def write_vm_code(vm_writer, symbol_table)
+  def write_vm_code(vm_writer, symbol_table, subroutine_kind)
     name = class_name
     arg_length = expression_list.length
 
     # Push receiver
     if symbol_table.include?(name)
       name = symbol_table.type_of(class_name)
-      index = symbol_table.index_of(class_name)
+      index = Utils.adjusted_index(class_name, symbol_table, subroutine_kind)
       kind = symbol_table.kind_of(class_name)
 
       vm_writer.write_push(Utils.kind_to_segment(kind), index)
@@ -78,7 +80,7 @@ SubroutineCall = Struct.new(:type, :class_name, :subroutine_name, :expression_li
 
     # Push arguments
     expression_list.each do |expression|
-      expression.write_vm_code(vm_writer, symbol_table)
+      expression.write_vm_code(vm_writer, symbol_table, subroutine_kind)
     end
 
     vm_writer.write_call("#{name}.#{subroutine_name}", arg_length)
@@ -86,15 +88,15 @@ SubroutineCall = Struct.new(:type, :class_name, :subroutine_name, :expression_li
 end
 
 Variable = Struct.new(:name) do
-  def write_vm_code(vm_writer, symbol_table)
-    index = symbol_table.index_of(name)
+  def write_vm_code(vm_writer, symbol_table, subroutine_kind)
+    index = Utils.adjusted_index(name, symbol_table, subroutine_kind)
     kind = symbol_table.kind_of(name)
     vm_writer.write_push(Utils.kind_to_segment(kind), index)
   end
 end
 
 StringConst = Struct.new(:value) do
-  def write_vm_code(vm_writer, symbol_table)
+  def write_vm_code(vm_writer, symbol_table, subroutine_kind)
     vm_writer.write_push(:CONST, value.length)
     vm_writer.write_call("String.new", 1)
 
@@ -106,11 +108,11 @@ StringConst = Struct.new(:value) do
 end
 
 ArrayIndex = Struct.new(:name, :expression) do
-  def write_vm_code(vm_writer, symbol_table)
+  def write_vm_code(vm_writer, symbol_table, subroutine_kind)
     kind = symbol_table.kind_of(name)
-    index = symbol_table.index_of(name)
+    index = Utils.adjusted_index(name, symbol_table, subroutine_kind)
 
-    expression.write_vm_code(vm_writer, symbol_table)
+    expression.write_vm_code(vm_writer, symbol_table, subroutine_kind)
 
     vm_writer.write_push(Utils.kind_to_segment(kind), index)
     vm_writer.write_arithmetic(:ADD)
