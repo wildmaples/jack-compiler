@@ -70,7 +70,7 @@ class CompilationEngine
     @subroutine_kind = kind = get_subroutine_kind
     advance # constructor / function / method
 
-    @subroutine_type = type = keyword_or_identifier
+    type = keyword_or_identifier
     advance # void / type
 
     subroutine_name = @tokenizer.identifier
