@@ -196,19 +196,19 @@ class CompilationEngine
       advance # [
       array_index = @expression_parser.parse_expression
       advance # ]
-      advance # =
-      compile_expression # expression
+    end
+
+    advance # =
+    compile_expression # expression
+
+    if array_index
       array_index.write_vm_code(@vm_writer, @symbol_table)
 
       @vm_writer.write_push(segment, index)
       @vm_writer.write_arithmetic(:ADD)
       @vm_writer.write_pop(:POINTER, 1)
       @vm_writer.write_pop(:THAT, 0)
-
     else
-      advance # =
-      compile_expression # expression
-
       @vm_writer.write_pop(segment, index)
     end
 
