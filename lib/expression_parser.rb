@@ -40,6 +40,8 @@ KeywordConstant = Struct.new(:value) do
       vm_writer.write_arithmetic(:NOT) if value == :TRUE
     when :THIS
       vm_writer.write_push(:POINTER, 0)
+    when :NULL
+      vm_writer.write_push(:CONST, 0)
     end
   end
 end
